@@ -9,4 +9,4 @@ COPY . .
 ENV PYTHONUNBUFFERED=1
 
 # Railway expõe a porta via $PORT
-CMD ["sh", "-c", "python -m uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000}"]
+CMD ["sh", "-c", "python -m uvicorn app:app --host 0.0.0.0 --port ${PORT:-8000}"]
