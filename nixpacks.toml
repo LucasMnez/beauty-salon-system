@@ -1,14 +1,9 @@
 # Nixpacks configuration for Railway
 # Railway will detect Python automatically from requirements.txt and runtime.txt
-# This file customizes the build process
-
-[phases.setup]
-nixPkgs = ["python311", "python311Packages.pip", "nodejs-18_x"]
+# This file only customizes the start command
 
 [phases.install]
 cmds = [
-  "python3 -m pip install --upgrade pip setuptools wheel",
-  "python3 -m pip install -r requirements.txt",
   "cd backend && npm install --production"
 ]
 
