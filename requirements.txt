@@ -7,3 +7,5 @@ pywhatkit>=5.4
 pyautogui>=0.9.54
 fastapi
 uvicorn[standard]
+flask
+gunicorn
