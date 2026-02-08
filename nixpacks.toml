@@ -1,0 +1,15 @@
+# Nixpacks configuration for Railway
+# Railway will detect Python from requirements.txt and runtime.txt
+# This file ensures Python and pip are installed correctly
+
+[providers]
+python = "3.11"
+
+[phases.install]
+cmds = [
+  "pip install -r requirements.txt",
+  "cd backend && npm install --omit=dev"
+]
+
+[start]
+cmd = "cd backend && python3 app.py"
