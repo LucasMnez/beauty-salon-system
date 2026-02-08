@@ -18,11 +18,47 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# Credenciais e Variáveis de Ambiente (CRÍTICO - NUNCA COMMITAR!)
+.env
+.env.local
+.env.*.local
+*.env
+.envrc
+.credentials
+secrets/
+*.key
+*.pem
+*.p12
+*.pfx
+
 # WhatsApp Auth (contém credenciais sensíveis)
 whatsapp_auth/
+backend/whatsapp_auth/
+
+# Banco de Dados (contém dados sensíveis)
+*.db
+*.sqlite
+*.sqlite3
+backend/agendamento.db
+backend/*.db
 
 # Porta
 .port
+
+# Logs (podem conter informações sensíveis)
+*.log
+logs/
+backend/logs/
+*.log.*
+
+# Backup e arquivos temporários
+*.bak
+*.backup
+*.tmp
+*.temp
+backup/
+backups/
+*.sql.backup
 
 # IDE
 .vscode/
@@ -34,3 +70,11 @@ whatsapp_auth/
 # OS
 .DS_Store
 Thumbs.db
+
+# Arquivos de deploy com informações sensíveis
+deploy/.env
+deploy/secrets/
+
+# PM2
+.pm2/
+ecosystem.config.js
