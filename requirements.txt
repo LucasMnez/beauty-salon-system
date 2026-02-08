@@ -1,0 +1,11 @@
+# Este arquivo é um link simbólico para backend/requirements.txt
+# Railway precisa de requirements.txt na raiz para detectar Python
+# As dependências reais estão em backend/requirements.txt
+
+Flask>=2.3.0,<3.1.0
+flask-cors>=4.0.0
+qrcode>=7.4.2
+Pillow>=10.0.0
+Werkzeug>=2.3.0,<3.1.0
+pywhatkit>=5.4
+pyautogui>=0.9.54
