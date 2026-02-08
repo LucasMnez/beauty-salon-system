@@ -32,6 +32,7 @@ from flask_cors import CORS, cross_origin
 from functools import wraps
 import sqlite3
 import os
+
 from datetime import datetime, timedelta
 import json
 import qrcode
@@ -76,6 +77,11 @@ CORS(app,
      expose_headers=['Set-Cookie'],
      allow_credentials=True)
 
+
+@app.route("/health")
+def health():
+    return {"ok": True}
+    
 # Adicionar handler manual para OPTIONS (preflight)
 @app.after_request
 def after_request(response):
