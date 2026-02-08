@@ -1102,6 +1102,28 @@ def get_port():
             port = host.split(':')[1]
     return str(port), 200, {'Content-Type': 'text/plain', 'Access-Control-Allow-Origin': '*'}
 
+@app.route('/health')
+@app.route('/healthcheck')
+def healthcheck():
+    """Endpoint de healthcheck para Railway verificar se o serviço está funcionando"""
+    try:
+        # Verificar se o banco de dados está acessível
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute('SELECT 1')
+        conn.close()
+        return jsonify({
+            'status': 'healthy',
+            'service': 'raissa-nails-beauty',
+            'database': 'connected'
+        }), 200
+    except Exception as e:
+        return jsonify({
+            'status': 'unhealthy',
+            'service': 'raissa-nails-beauty',
+            'error': str(e)
+        }), 503
+
 @app.route('/api/servicos', methods=['GET'])
 def get_servicos():
     """Retorna lista de serviços com valores (do banco ou fallback)"""
