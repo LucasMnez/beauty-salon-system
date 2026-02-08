@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Admin - Raissa Nails Beauty</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #D4A574 0%, #C8965F 100%);
+            padding: 20px;
+        }
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-width: 400px;
+            width: 100%;
+        }
+        .login-box h1 {
+            color: #D4A574;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .login-box p {
+            color: #666;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+            box-sizing: border-box;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #D4A574;
+        }
+        .error-message {
+            background: #F8D7DA;
+            color: #721C24;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .error-message.show {
+            display: block;
+        }
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            background: #D4A574;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .btn-login:hover {
+            background: #C8965F;
+        }
+        .btn-login:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .security-info {
+            margin-top: 20px;
+            padding: 15px;
+            background: #E7F3FF;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #0C5460;
+        }
+        .security-info strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <h1>🔐 Login Admin</h1>
+            <p>Área restrita - Acesso apenas para administradores</p>
+            
+            <div id="errorMessage" class="error-message"></div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Usuário</label>
+                    <input type="text" id="username" name="username" required autocomplete="username">
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Senha</label>
+                    <input type="password" id="password" name="password" required autocomplete="current-password">
+                </div>
+                
+                <button type="submit" class="btn-login" id="loginBtn">Entrar</button>
+            </form>
+            
+            <div class="security-info">
+                <strong>🔒 Segurança:</strong>
+                <div>Sessão expira em 8 horas</div>
+                <div>Token seguro com criptografia</div>
+                <div>Acesso registrado e monitorado</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const loginForm = document.getElementById('loginForm');
+        const errorMessage = document.getElementById('errorMessage');
+        const loginBtn = document.getElementById('loginBtn');
+
+        // Detectar porta da API
+        let API_PORT = 5000;
+        async function detectarPorta() {
+            const portasParaTestar = [5001, 5000, 5002, 5003];
+            for (const porta of portasParaTestar) {
+                try {
+                    const testResponse = await fetch(`http://localhost:${porta}/api/servicos`, { 
+                        method: 'GET',
+                        signal: AbortSignal.timeout(2000)
+                    });
+                    if (testResponse.ok || testResponse.status === 200) {
+                        API_PORT = porta;
+                        return true;
+                    }
+                } catch (e) {
+                    continue;
+                }
+            }
+            return false;
+        }
+
+        loginForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+
+            if (!username || !password) {
+                mostrarErro('Por favor, preencha todos os campos');
+                return;
+            }
+
+            loginBtn.disabled = true;
+            loginBtn.textContent = 'Entrando...';
+            errorMessage.classList.remove('show');
+
+            try {
+                await detectarPorta();
+                
+                const response = await fetch(`http://localhost:${API_PORT}/api/admin/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include', // CRÍTICO: permite envio de cookies
+                    mode: 'cors', // Garantir modo CORS
+                    body: JSON.stringify({
+                        username: username,
+                        password: password
+                    })
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    // Armazenar token no localStorage
+                    if (result.token) {
+                        localStorage.setItem('admin_token', result.token);
+                        console.log('Token armazenado no localStorage');
+                    }
+                    // Redirecionar para admin
+                    window.location.href = 'admin.html';
+                } else {
+                    mostrarErro(result.error || 'Credenciais inválidas');
+                    loginBtn.disabled = false;
+                    loginBtn.textContent = 'Entrar';
+                }
+            } catch (error) {
+                console.error('Erro ao fazer login:', error);
+                mostrarErro('Erro ao conectar com o servidor. Verifique se está rodando.');
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Entrar';
+            }
+        });
+
+        function mostrarErro(mensagem) {
+            errorMessage.textContent = mensagem;
+            errorMessage.classList.add('show');
+        }
+
+        // Verificar se já está logado
+        (async function() {
+            await detectarPorta();
+            const token = localStorage.getItem('admin_token');
+            if (!token) {
+                return; // Sem token, não está logado
+            }
+            
+            try {
+                const response = await fetch(`http://localhost:${API_PORT}/api/admin/verify`, {
+                    credentials: 'include',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.authenticated) {
+                        window.location.href = 'admin.html';
+                    } else {
+                        // Token inválido, remover
+                        localStorage.removeItem('admin_token');
+                    }
+                }
+            } catch (e) {
+                // Ignorar erro - usuário não está logado
+                localStorage.removeItem('admin_token');
+            }
+        })();
+    </script>
+</body>
+</html>

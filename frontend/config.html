@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurações - Raissa Nails Beauty</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .config-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .config-header {
+            background: linear-gradient(135deg, #D4A574 0%, #C8965F 100%);
+            color: white;
+            padding: 25px 30px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .config-header h1 {
+            margin: 0;
+            font-size: 2em;
+            font-weight: 600;
+        }
+        .back-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+        .back-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-1px);
+        }
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ddd;
+        }
+        .tab {
+            padding: 12px 24px;
+            background: #f5f5f5;
+            border: none;
+            border-radius: 8px 8px 0 0;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            color: #666;
+            transition: all 0.3s;
+        }
+        .tab.active {
+            background: #D4A574;
+            color: white;
+        }
+        .tab:hover {
+            background: #e0e0e0;
+        }
+        .tab.active:hover {
+            background: #C8965F;
+        }
+        .tab-content {
+            display: none;
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .section-header h2 {
+            margin: 0;
+            color: #333;
+            font-size: 1.5em;
+        }
+        .btn-primary {
+            background: #D4A574;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .btn-primary:hover {
+            background: #C8965F;
+            transform: translateY(-1px);
+        }
+        .table-container {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background: #f5f5f5;
+            font-weight: 600;
+            color: #333;
+        }
+        tr:hover {
+            background: #f9f9f9;
+        }
+        .btn-edit, .btn-delete {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-right: 5px;
+        }
+        .btn-edit {
+            background: #4CAF50;
+            color: white;
+        }
+        .btn-delete {
+            background: #f44336;
+            color: white;
+        }
+        .btn-edit:hover {
+            background: #45a049;
+        }
+        .btn-delete:hover {
+            background: #da190b;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            overflow: auto;
+        }
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .modal-header h3 {
+            margin: 0;
+            color: #333;
+        }
+        .close {
+            font-size: 28px;
+            font-weight: bold;
+            color: #aaa;
+            cursor: pointer;
+        }
+        .close:hover {
+            color: #000;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 500;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .form-group input[type="checkbox"] {
+            width: auto;
+        }
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+        .btn-cancel {
+            background: #999;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .btn-cancel:hover {
+            background: #777;
+        }
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .status-ativo {
+            background: #4CAF50;
+            color: white;
+        }
+        .status-inativo {
+            background: #999;
+            color: white;
+        }
+        .dias-semana {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .dia-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            background: white;
+        }
+        .dia-card.inativo {
+            opacity: 0.6;
+            background: #f5f5f5;
+        }
+        .dia-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .dia-header h4 {
+            margin: 0;
+            color: #333;
+        }
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #4CAF50;
+        }
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        .horario-config {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .horario-config label {
+            font-size: 12px;
+            color: #666;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="config-container">
+        <div class="config-header">
+            <div>
+                <h1>⚙️ Configurações</h1>
+                <p>Gerencie serviços e horários de funcionamento</p>
+            </div>
+            <a href="admin.html" class="back-btn">← Voltar</a>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="mostrarAba('servicos')">Serviços</button>
+            <button class="tab" onclick="mostrarAba('horarios')">Horários</button>
+        </div>
+
+        <!-- Aba Serviços -->
+        <div id="servicos-tab" class="tab-content active">
+            <div class="section-header">
+                <h2>Serviços Disponíveis</h2>
+                <button class="btn-primary" onclick="abrirModalServico()">➕ Novo Serviço</button>
+            </div>
+            <div class="table-container">
+                <table id="servicos-table">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Valor (R$)</th>
+                            <th>Duração</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="servicos-tbody">
+                        <tr>
+                            <td colspan="5" class="loading">Carregando serviços...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Aba Horários -->
+        <div id="horarios-tab" class="tab-content">
+            <div class="section-header">
+                <h2>Configuração de Horários</h2>
+                <button class="btn-primary" onclick="abrirModalHorarioEspecifico()">➕ Data Específica</button>
+            </div>
+            <div id="horarios-content">
+                <div class="loading">Carregando configurações...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Serviço -->
+    <div id="servicoModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="servicoModalTitle">Novo Serviço</h3>
+                <span class="close" onclick="fecharModalServico()">&times;</span>
+            </div>
+            <form id="servicoForm">
+                <input type="hidden" id="servico-id">
+                <div class="form-group">
+                    <label for="servico-nome">Nome do Serviço *</label>
+                    <input type="text" id="servico-nome" required>
+                </div>
+                <div class="form-group">
+                    <label for="servico-valor">Valor (R$) *</label>
+                    <input type="number" id="servico-valor" step="0.01" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="servico-duracao">Duração (minutos) *</label>
+                    <input type="number" id="servico-duracao" min="1" required>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="servico-ativo" checked>
+                        Serviço ativo
+                    </label>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-cancel" onclick="fecharModalServico()">Cancelar</button>
+                    <button type="submit" class="btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Horário Específico -->
+    <div id="horarioModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="horarioModalTitle">Nova Data Específica</h3>
+                <span class="close" onclick="fecharModalHorario()">&times;</span>
+            </div>
+            <form id="horarioForm">
+                <input type="hidden" id="horario-id">
+                <div class="form-group">
+                    <label for="horario-data">Data *</label>
+                    <input type="date" id="horario-data" required>
+                </div>
+                <div class="form-group">
+                    <label for="horario-inicio">Horário Início *</label>
+                    <input type="time" id="horario-inicio" required>
+                </div>
+                <div class="form-group">
+                    <label for="horario-fim">Horário Fim *</label>
+                    <input type="time" id="horario-fim" required>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="horario-tem-almoco" checked>
+                        Tem horário de almoço
+                    </label>
+                </div>
+                <div id="almoco-config">
+                    <div class="form-group">
+                        <label for="almoco-inicio">Almoço Início</label>
+                        <input type="time" id="almoco-inicio">
+                    </div>
+                    <div class="form-group">
+                        <label for="almoco-fim">Almoço Fim</label>
+                        <input type="time" id="almoco-fim">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="horario-ativo" checked>
+                        Dia ativo (trabalha)
+                    </label>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-cancel" onclick="fecharModalHorario()">Cancelar</button>
+                    <button type="submit" class="btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: raissa-nails-backend
+    env: python
+    buildCommand: cd backend && pip install -r requirements.txt
+    startCommand: cd backend && python3 app.py
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: PORT
+        fromService:
+          type: web
+          name: raissa-nails-backend
+          property: port
+      - key: WHATSAPP_BOT_URL
+        value: http://localhost:3001
+  
+  - type: worker
+    name: raissa-nails-whatsapp-bot
+    env: node
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && node whatsapp-bot.js
+    envVars:
+      - key: NODE_ENV
+        value: production
