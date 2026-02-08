@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "Sistema de agendamento para salão de beleza",
   "private": true,
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  },
   "scripts": {
     "start": "cd backend && node whatsapp-bot.js"
   },

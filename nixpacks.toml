@@ -1,9 +1,6 @@
 # Nixpacks configuration for Railway
 # Railway will detect Python automatically from requirements.txt and runtime.txt
-# This file customizes Node.js version and install commands
-
-[phases.setup]
-nixPkgs = ["nodejs-20_x"]
+# Railway will detect Node.js 20 from .nvmrc
 
 [phases.install]
 cmds = [
