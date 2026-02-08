@@ -1,9 +1,13 @@
 # Nixpacks configuration for Railway
 # Railway will detect Python automatically from requirements.txt and runtime.txt
-# Railway will detect Node.js 20 from .nvmrc
+# This file customizes the install and start commands
+
+[phases.setup]
+nixPkgs = ["python311"]
 
 [phases.install]
 cmds = [
+  "pip install -r requirements.txt",
   "cd backend && npm install --omit=dev"
 ]
 
