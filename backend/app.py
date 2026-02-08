@@ -80,10 +80,6 @@ CORS(app,
 @app.route("/")
 def health():
     return "OK"
-@app.route("/health")
-def health():
-    return {"ok": True}
-    
 # Adicionar handler manual para OPTIONS (preflight)
 @app.after_request
 def after_request(response):
