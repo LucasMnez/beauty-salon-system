@@ -77,7 +77,9 @@ CORS(app,
      expose_headers=['Set-Cookie'],
      allow_credentials=True)
 
-
+@app.route("/")
+def health():
+    return "OK"
 @app.route("/health")
 def health():
     return {"ok": True}
