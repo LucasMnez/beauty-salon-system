@@ -1,9 +1,6 @@
 # Nixpacks configuration for Railway
-# Railway will detect Python automatically from requirements.txt
+# Railway will detect Python automatically from requirements.txt and runtime.txt
 # This file customizes the build process
-
-[providers]
-python = "311"
 
 [phases.setup]
 nixPkgs = ["python311", "python311Packages.pip", "nodejs-18_x"]
