@@ -12,6 +12,9 @@ python_full_version = sys.version_info
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_NAME = os.path.join(BASE_DIR, "agendamento.db")
+# Credenciais de admin (em produção, usar variáveis de ambiente)
+ADMIN_USERNAME = os.getenv('ADMIN_USERNAME', 'raissa')
+ADMIN_PASSWORD_HASH = os.getenv('ADMIN_PASSWORD_HASH', None)  # Será gerado na primeira execução
 
 
 # Verificar se Python é 3.8+
@@ -60,9 +63,6 @@ FRONTEND_DIR = os.path.join(os.path.dirname(BASE_DIR), 'frontend')
 if not os.path.exists(FRONTEND_DIR):
     FRONTEND_DIR = os.path.join(BASE_DIR, 'frontend')
 
-# Credenciais de admin (em produção, usar variáveis de ambiente)
-ADMIN_USERNAME = os.getenv('ADMIN_USERNAME', 'raissa')
-ADMIN_PASSWORD_HASH = os.getenv('ADMIN_PASSWORD_HASH', None)  # Será gerado na primeira execução
 
 # Configuração do banco de dados (caminho relativo ao backend/)
 DB_NAME = os.path.join(os.path.dirname(__file__), 'agendamento.db')
@@ -260,23 +260,21 @@ def init_db():
     conn.close()
     
     # Gerar hash da senha padrão se não existir
+def init_admin_password():
     global ADMIN_PASSWORD_HASH
     if ADMIN_PASSWORD_HASH is None:
-        # Senha padrão: Raissa123! (deve ser alterada em produção)
-        ADMIN_PASSWORD_HASH = hash_password('Raissa123!')
-        print(f"\n⚠️  SENHA PADRÃO DO ADMIN:")
-        print(f"   Usuário: {ADMIN_USERNAME}")
-        print(f"   Senha: Raissa123!")
-        print(f"   ⚠️  ALTERE A SENHA EM PRODUÇÃO!\n")
+        ADMIN_PASSWORD_HASH = hash_password("Raissa123!")
+        print("⚠️ Senha padrão do admin inicializada")
 
 
 
 # Configurar Flask sem static_folder para evitar conflitos
 # Vamos servir arquivos estáticos manualmente com rotas específicas
 app = Flask(__name__)
-init_db()
-print("✅ Banco de dados verificado/inicializado")
-print(f"📁 Banco existe? {os.path.exists(DB_NAME)}")
+with app.app_context():
+    init_db()
+    init_admin_password()
+    print(f"📁 Banco existe? {os.path.exists(DB_NAME)}")
 if os.path.exists(DB_NAME):
     tamanho = os.path.getsize(DB_NAME)
     print(f"📁 Tamanho do banco: {tamanho} bytes")
@@ -2608,9 +2606,6 @@ def limpar_agendamentos():
         return jsonify({'error': f'Erro ao limpar agendamentos: {str(e)}'}), 500
 
 if __name__ == '__main__':
-    init_db()
-    print("Banco de dados inicializado!")
-    
     # Obter configurações de ambiente
     flask_env = os.getenv('FLASK_ENV', 'development')
     is_production = flask_env == 'production'
