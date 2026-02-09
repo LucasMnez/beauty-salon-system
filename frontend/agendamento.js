@@ -1,7 +1,17 @@
 // Configuração da API
 // Tentar detectar porta automaticamente (tentar 5001 se 5000 não funcionar)
 let API_PORT = 5001;
-let API_URL = `http://localhost:${API_PORT}/api`;
+//let API_URL = `http://localhost:${API_PORT}/api`;
+
+const API_URL = (() => {
+    // Produção (Railway)
+    if (location.hostname.includes('railway.app')) {
+        return 'https://SEU-BACKEND.up.railway.app/api';
+    }
+
+    // Dev local
+    return 'http://localhost:5000/api';
+})();
 
 // Função para detectar porta disponível
 async function detectarPorta() {

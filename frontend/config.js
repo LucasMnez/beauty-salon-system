@@ -1,5 +1,13 @@
 // Detectar porta da API
-let API_URL = '/api';
+const API_URL = (() => {
+    // Produção (Railway)
+    if (location.hostname.includes('railway.app')) {
+        return 'https://SEU-BACKEND.up.railway.app/api';
+    }
+
+    // Dev local
+    return 'http://localhost:5000/api';
+})();
 
 async function detectarPorta() {
     try {

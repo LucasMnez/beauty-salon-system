@@ -1,7 +1,15 @@
 // Configuração da API
 // Usar caminho relativo quando servido pelo mesmo servidor Flask
 // Isso evita problemas de CORS e funciona independente da porta
-let API_URL = '/api';
+const API_URL = (() => {
+    // Produção (Railway)
+    if (location.hostname.includes('railway.app')) {
+        return 'https://SEU-BACKEND.up.railway.app/api';
+    }
+
+    // Dev local
+    return 'http://localhost:5000/api';
+})();
 
 // Detectar se estamos sendo servidos pelo Flask ou não
 // Se sim, usar caminho relativo. Se não, detectar porta
