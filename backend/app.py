@@ -9,6 +9,11 @@ import site
 python_version = f"{sys.version_info.major}.{sys.version_info.minor}"
 python_full_version = sys.version_info
 
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_NAME = os.path.join(BASE_DIR, "agendamento.db")
+
+
 # Verificar se Python é 3.8+
 if python_full_version < (3, 8):
     print(f"ERRO: Python {python_version} não é suportado!")
@@ -44,13 +49,6 @@ import re
 import hashlib
 import secrets
 
-# Tentar importar qrcode_pix (opcional)
-try:
-    from qrcode_pix import qrcode_pix
-    HAS_QRCODE_PIX = True
-except ImportError:
-    HAS_QRCODE_PIX = False
-    print("Aviso: qrcode-pix não instalado. Usando modo fallback.")
 
 # Configurar Flask para servir arquivos estáticos do frontend
 # Se executado de dentro de backend/, usar caminho relativo
@@ -62,9 +60,211 @@ FRONTEND_DIR = os.path.join(os.path.dirname(BASE_DIR), 'frontend')
 if not os.path.exists(FRONTEND_DIR):
     FRONTEND_DIR = os.path.join(BASE_DIR, 'frontend')
 
+
+def init_db():
+    """Inicializa o banco de dados"""
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+    
+    # Tabela de agendamentos
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS agendamentos (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nome TEXT NOT NULL,
+            telefone TEXT NOT NULL,
+            servico TEXT NOT NULL,
+            data DATE NOT NULL,
+            horario TEXT NOT NULL,
+            valor REAL NOT NULL,
+            status TEXT DEFAULT 'pendente',
+            forma_pagamento TEXT DEFAULT 'pendente',
+            pix_qrcode TEXT,
+            pix_copia_cola TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            UNIQUE(data, horario)
+        )
+    ''')
+    
+    # Adicionar coluna forma_pagamento se não existir (migration)
+    try:
+        cursor.execute('ALTER TABLE agendamentos ADD COLUMN forma_pagamento TEXT DEFAULT "pendente"')
+        conn.commit()
+    except sqlite3.OperationalError:
+        # Coluna já existe, ignorar
+        pass
+    
+    # Adicionar colunas de pagamento se não existirem (migration)
+    try:
+        cursor.execute('ALTER TABLE agendamentos ADD COLUMN data_pagamento DATE')
+        conn.commit()
+    except sqlite3.OperationalError:
+        # Coluna já existe, ignorar
+        pass
+    
+    try:
+        cursor.execute('ALTER TABLE agendamentos ADD COLUMN pago INTEGER DEFAULT 0')
+        conn.commit()
+    except sqlite3.OperationalError:
+        # Coluna já existe, ignorar
+        pass
+    
+    # Criar índices para melhorar performance das queries
+    cursor.execute('''
+        CREATE INDEX IF NOT EXISTS idx_agendamentos_data 
+        ON agendamentos(data)
+    ''')
+    cursor.execute('''
+        CREATE INDEX IF NOT EXISTS idx_agendamentos_status 
+        ON agendamentos(status)
+    ''')
+    cursor.execute('''
+        CREATE INDEX IF NOT EXISTS idx_agendamentos_data_status 
+        ON agendamentos(data, status)
+    ''')
+    
+    # Tabela de horários bloqueados (feriados, etc)
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS horarios_bloqueados (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            data DATE NOT NULL,
+            horario TEXT NOT NULL,
+            motivo TEXT,
+            UNIQUE(data, horario)
+        )
+    ''')
+    
+    # Índice para horários bloqueados
+    cursor.execute('''
+        CREATE INDEX IF NOT EXISTS idx_bloqueados_data 
+        ON horarios_bloqueados(data)
+    ''')
+    
+    # Tabela de sessões admin (para controle de tokens)
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS admin_sessions (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            session_token TEXT UNIQUE NOT NULL,
+            username TEXT NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            expires_at TIMESTAMP NOT NULL
+        )
+    ''')
+    
+    cursor.execute('''
+        CREATE INDEX IF NOT EXISTS idx_sessions_token 
+        ON admin_sessions(session_token)
+    ''')
+    
+    # Tabela de serviços
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS servicos (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nome TEXT NOT NULL UNIQUE,
+            valor REAL NOT NULL CHECK(valor >= 0),
+            duracao_minutos INTEGER NOT NULL CHECK(duracao_minutos > 0),
+            ativo INTEGER DEFAULT 1 CHECK(ativo IN (0, 1)),
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    ''')
+    
+    # Inserir serviços padrão se não existirem
+    servicos_padrao = [
+        ('Esmaltação em Gel - Mão', 50.00, 90, 1),
+        ('Esmaltação em Gel - Pé', 60.00, 90, 1),
+        ('Alongamento no molde F1', 120.00, 180, 1),
+        ('Banho de Gel', 80.00, 150, 1)
+    ]
+    
+    for nome, valor, duracao, ativo in servicos_padrao:
+        cursor.execute('''
+            SELECT id FROM servicos WHERE nome = ?
+        ''', (nome,))
+        if not cursor.fetchone():
+            cursor.execute('''
+                INSERT INTO servicos (nome, valor, duracao_minutos, ativo)
+                VALUES (?, ?, ?, ?)
+            ''', (nome, valor, duracao, ativo))
+    
+    # Tabela de configurações de horários (por dia da semana ou data específica)
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS config_horarios (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            tipo TEXT NOT NULL CHECK(tipo IN ('dia_semana', 'data_especifica')),
+            dia_semana INTEGER CHECK(dia_semana >= 0 AND dia_semana <= 6), -- 0=domingo, 6=sábado
+            data_especifica DATE, -- Para datas específicas (feriados, etc)
+            horario_inicio TEXT NOT NULL, -- Ex: '08:00'
+            horario_fim TEXT NOT NULL, -- Ex: '21:00'
+            tem_almoco INTEGER DEFAULT 1 CHECK(tem_almoco IN (0, 1)), -- 1=tem almoço, 0=não tem
+            almoco_inicio TEXT, -- Ex: '12:00'
+            almoco_fim TEXT, -- Ex: '13:00'
+            ativo INTEGER DEFAULT 1 CHECK(ativo IN (0, 1)), -- 1=ativo, 0=inativo (dia não trabalha)
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            UNIQUE(tipo, dia_semana, data_especifica)
+        )
+    ''')
+    
+    cursor.execute('''
+        CREATE INDEX IF NOT EXISTS idx_config_horarios_tipo 
+        ON config_horarios(tipo)
+    ''')
+    
+    cursor.execute('''
+        CREATE INDEX IF NOT EXISTS idx_config_horarios_dia_semana 
+        ON config_horarios(dia_semana)
+    ''')
+    
+    cursor.execute('''
+        CREATE INDEX IF NOT EXISTS idx_config_horarios_data 
+        ON config_horarios(data_especifica)
+    ''')
+    
+    # Inserir configuração padrão para todos os dias da semana se não existir
+    for dia in range(7):  # 0=domingo, 6=sábado
+        cursor.execute('''
+            SELECT id FROM config_horarios 
+            WHERE tipo = 'dia_semana' AND dia_semana = ?
+        ''', (dia,))
+        if not cursor.fetchone():
+            # Domingo não trabalha (ativo=0), outros dias trabalham normalmente
+            if dia == 0:  # Domingo
+                cursor.execute('''
+                    INSERT INTO config_horarios 
+                    (tipo, dia_semana, horario_inicio, horario_fim, tem_almoco, almoco_inicio, almoco_fim, ativo)
+                    VALUES ('dia_semana', ?, '08:00', '21:00', 1, '12:00', '13:00', 0)
+                ''', (dia,))
+            else:
+                cursor.execute('''
+                    INSERT INTO config_horarios 
+                    (tipo, dia_semana, horario_inicio, horario_fim, tem_almoco, almoco_inicio, almoco_fim, ativo)
+                    VALUES ('dia_semana', ?, '08:00', '21:00', 1, '12:00', '13:00', 1)
+                ''', (dia,))
+    
+    conn.commit()
+    conn.close()
+    
+    # Gerar hash da senha padrão se não existir
+    global ADMIN_PASSWORD_HASH
+    if ADMIN_PASSWORD_HASH is None:
+        # Senha padrão: Raissa123! (deve ser alterada em produção)
+        ADMIN_PASSWORD_HASH = hash_password('Raissa123!')
+        print(f"\n⚠️  SENHA PADRÃO DO ADMIN:")
+        print(f"   Usuário: {ADMIN_USERNAME}")
+        print(f"   Senha: Raissa123!")
+        print(f"   ⚠️  ALTERE A SENHA EM PRODUÇÃO!\n")
+
+
+
 # Configurar Flask sem static_folder para evitar conflitos
 # Vamos servir arquivos estáticos manualmente com rotas específicas
 app = Flask(__name__)
+init_db()
+print("✅ Banco de dados verificado/inicializado")
+print(f"📁 Banco existe? {os.path.exists(DB_NAME)}")
+if os.path.exists(DB_NAME):
+    tamanho = os.path.getsize(DB_NAME)
+    print(f"📁 Tamanho do banco: {tamanho} bytes")
 
 # Configuração CORS com suporte completo a credentials
 # Permitir qualquer origem localhost (para funcionar com qualquer porta)
