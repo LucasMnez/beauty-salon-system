@@ -63,8 +63,8 @@ O frontend é servido automaticamente pelo Flask. Acesse:
 
 ## 🔐 Credenciais Admin
 
-- **Usuário:** `raissa`
-- **Senha:** `Raissa123!`
+- **Usuário:** ``
+- **Senha:** ``
 
 ⚠️ **IMPORTANTE:** Altere a senha em produção!
 
