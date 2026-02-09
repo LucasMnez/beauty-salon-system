@@ -1,6 +1,10 @@
 // Detectar porta da API
-const API_URL = 'https://backend-production-039a.up.railway.app/api';
+const API_URL =
+  location.hostname.includes('railway.app')
+    ? 'https://backend-production-039a.up.railway.app/api'
+    : 'http://localhost:5000/api';
 
+    
 // Verificar autenticação
 async function verificarAutenticacao() {
     const token = localStorage.getItem('admin_token');
