@@ -70,8 +70,9 @@ app = Flask(__name__)
 # Permitir qualquer origem localhost (para funcionar com qualquer porta)
 # Em desenvolvimento, permitir todas as origens localhost
 CORS(app, 
-     supports_credentials=True,
-     origins=['*'],  # Permitir todas as origens em desenvolvimento
+    supports_credentials=True,
+    origins=[
+        "https://raissa-nails-design.up.railway.app"], 
      allow_headers=['Content-Type', 'Authorization', 'X-Requested-With', 'Cache-Control', 'Pragma', 'Expires'],
      methods=['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
      expose_headers=['Set-Cookie'],

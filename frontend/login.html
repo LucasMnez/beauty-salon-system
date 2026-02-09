@@ -171,7 +171,6 @@
             errorMessage.classList.remove('show');
 
             try {
-                await detectarPorta();
                 
                 const response = await fetch(`http://localhost:${API_PORT}/api/admin/login`, {
                     method: 'POST',
@@ -216,7 +215,6 @@
 
         // Verificar se já está logado
         (async function() {
-            await detectarPorta();
             const token = localStorage.getItem('admin_token');
             if (!token) {
                 return; // Sem token, não está logado

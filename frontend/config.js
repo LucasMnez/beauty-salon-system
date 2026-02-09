@@ -1,52 +1,5 @@
 // Detectar porta da API
-const API_URL = (() => {
-    // Produção (Railway)
-    if (location.hostname.includes('railway.app')) {
-        return 'https://SEU-BACKEND.up.railway.app/api';
-    }
-
-    // Dev local
-    return 'http://localhost:5000/api';
-})();
-
-async function detectarPorta() {
-    try {
-        // Tentar primeiro com caminho relativo (quando servido pelo Flask)
-        const response = await fetch('/api/servicos', {
-            method: 'GET',
-            credentials: 'include',
-            cache: 'no-store'
-        });
-        
-        if (response.ok) {
-            API_URL = '/api';
-            return true;
-        }
-    } catch (e) {
-        console.log('Caminho relativo falhou, tentando portas...');
-    }
-    
-    // Tentar portas comuns
-    const portas = [5001, 5000, 5002, 5003];
-    for (const porta of portas) {
-        try {
-            const response = await fetch(`http://localhost:${porta}/api/servicos`, {
-                method: 'GET',
-                credentials: 'include',
-                cache: 'no-store'
-            });
-            
-            if (response.ok) {
-                API_URL = `http://localhost:${porta}/api`;
-                return true;
-            }
-        } catch (e) {
-            continue;
-        }
-    }
-    
-    return false;
-}
+const API_URL = 'https://backend-production-039a.up.railway.app/api';
 
 // Verificar autenticação
 async function verificarAutenticacao() {
@@ -650,7 +603,6 @@ function mostrarAba(aba) {
 
 // Inicializar
 (async function() {
-    await detectarPorta();
     
     // Verificar autenticação
     const autenticado = await verificarAutenticacao();

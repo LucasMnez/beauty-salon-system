@@ -3,50 +3,8 @@
 let API_PORT = 5001;
 //let API_URL = `http://localhost:${API_PORT}/api`;
 
-const API_URL = (() => {
-    // Produção (Railway)
-    if (location.hostname.includes('railway.app')) {
-        return 'https://SEU-BACKEND.up.railway.app/api';
-    }
+const API_URL = 'https://backend-production-039a.up.railway.app/api';
 
-    // Dev local
-    return 'http://localhost:5000/api';
-})();
-
-// Função para detectar porta disponível
-async function detectarPorta() {
-    console.log('Detectando porta do servidor...');
-    
-    // Tentar portas em ordem: 5001 (mais provável se 5000 estava ocupada), depois 5000
-    const portasParaTestar = [5001, 5000, 5002, 5003];
-    
-    for (const porta of portasParaTestar) {
-        try {
-            console.log(`Testando porta ${porta}...`);
-            const testResponse = await fetch(`http://localhost:${porta}/api/servicos`, { 
-                method: 'GET',
-                signal: AbortSignal.timeout(2000) // Timeout de 2 segundos
-            });
-            
-            if (testResponse.ok || testResponse.status === 200) {
-                API_PORT = porta;
-                API_URL = `http://localhost:${API_PORT}/api`;
-                console.log(`✓ Porta detectada: ${API_PORT}`);
-                return true;
-            }
-        } catch (e) {
-            // Porta não disponível, continuar tentando
-            console.log(`Porta ${porta} não disponível: ${e.message}`);
-            continue;
-        }
-    }
-    
-    // Se nenhuma porta funcionou, usar padrão 5000
-    console.warn('⚠️ Não foi possível detectar porta automaticamente, usando padrão 5000');
-    API_PORT = 5000;
-    API_URL = `http://localhost:${API_PORT}/api`;
-    return false;
-}
 
 // Estado da aplicação
 let servicos = {};
@@ -1298,9 +1256,6 @@ function atualizarIndicadoresLotacao() {
 // Inicializar quando o DOM estiver pronto
 async function inicializar() {
     console.log('Inicializando aplicação...');
-    
-    // Detectar porta antes de carregar serviços
-    await detectarPorta();
     
     // Carregar serviços
     await carregarServicos();

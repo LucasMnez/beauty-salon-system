@@ -1,120 +1,8 @@
 // Configuração da API
 // Usar caminho relativo quando servido pelo mesmo servidor Flask
 // Isso evita problemas de CORS e funciona independente da porta
-const API_URL = (() => {
-    // Produção (Railway)
-    if (location.hostname.includes('railway.app')) {
-        return 'https://SEU-BACKEND.up.railway.app/api';
-    }
+const API_URL = 'https://backend-production-039a.up.railway.app/api';
 
-    // Dev local
-    return 'http://localhost:5000/api';
-})();
-
-// Detectar se estamos sendo servidos pelo Flask ou não
-// Se sim, usar caminho relativo. Se não, detectar porta
-let portaDetectada = false;
-
-async function detectarPorta() {
-    // Se já detectou antes e está usando caminho relativo, não precisa detectar novamente
-    if (portaDetectada && API_URL === '/api') {
-        return true;
-    }
-    
-    console.log('🔍 Detectando configuração da API...');
-    console.log('   URL atual:', window.location.href);
-    console.log('   Hostname:', window.location.hostname);
-    console.log('   Port:', window.location.port);
-    
-    // Primeiro, tentar usar caminho relativo (se servido pelo Flask)
-    // Isso funciona quando o HTML é servido pelo mesmo servidor Flask
-    try {
-        console.log('   Testando caminho relativo /api/servicos...');
-        const testResponse = await fetch('/api/servicos', { 
-            method: 'GET',
-            signal: AbortSignal.timeout(3000),
-            cache: 'no-store',
-            credentials: 'include'
-        });
-        
-        console.log('   Resposta do caminho relativo:', testResponse.status, testResponse.ok);
-        
-        if (testResponse.ok || testResponse.status === 200) {
-            API_URL = '/api';
-            portaDetectada = true;
-            console.log(`✅ Usando caminho relativo: ${API_URL}`);
-            console.log(`✅ URL completa será: ${window.location.origin}${API_URL}`);
-            return true;
-        }
-    } catch (e) {
-        console.log('   Caminho relativo não funcionou:', e.message);
-        console.log('   Tentando detectar porta...');
-    }
-    
-    // Se caminho relativo não funcionar, tentar detectar porta
-    // Primeiro, tentar ler do endpoint /.port em várias portas
-    const portasParaTestarPort = [5000, 5001, 5002, 5003, 5004];
-    
-    for (const porta of portasParaTestarPort) {
-        try {
-            console.log(`   Testando /.port na porta ${porta}...`);
-            const portResponse = await fetch(`http://localhost:${porta}/.port`, {
-                method: 'GET',
-                signal: AbortSignal.timeout(1000),
-                cache: 'no-store'
-            });
-            if (portResponse.ok) {
-                const porta = await portResponse.text();
-                const portaNum = parseInt(porta.trim());
-                if (!isNaN(portaNum)) {
-                    API_URL = `http://localhost:${portaNum}/api`;
-                    portaDetectada = true;
-                    console.log(`✅ Porta detectada via /.port: ${portaNum}`);
-                    console.log(`✅ API_URL: ${API_URL}`);
-                    return true;
-                }
-            }
-        } catch (e) {
-            // Continuar tentando outras portas
-            continue;
-        }
-    }
-    
-    // Se não conseguir, tentar portas manualmente testando /api/servicos
-    const portasParaTestar = [5000, 5001, 5002, 5003, 5004];
-    
-    for (const porta of portasParaTestar) {
-        try {
-            console.log(`   Testando porta ${porta} com /api/servicos...`);
-            const testResponse = await fetch(`http://localhost:${porta}/api/servicos`, { 
-                method: 'GET',
-                signal: AbortSignal.timeout(2000),
-                cache: 'no-store',
-                credentials: 'include'
-            });
-            
-            console.log(`   Resposta da porta ${porta}:`, testResponse.status, testResponse.ok);
-            
-            if (testResponse.ok || testResponse.status === 200) {
-                API_URL = `http://localhost:${porta}/api`;
-                portaDetectada = true;
-                console.log(`✅ Porta detectada: ${porta}`);
-                console.log(`✅ API_URL: ${API_URL}`);
-                return true;
-            }
-        } catch (e) {
-            console.log(`   Porta ${porta} não disponível: ${e.message}`);
-            continue;
-        }
-    }
-    
-    console.error('❌ Nenhuma porta disponível encontrada!');
-    console.error('   Verifique se o servidor Flask está rodando:');
-    console.error('   cd backend && python3 app.py');
-    console.error('   URL tentada:', API_URL);
-    portaDetectada = false;
-    return false;
-}
 
 let agendamentos = [];
 let filtros = {
@@ -135,12 +23,12 @@ async function carregarAgendamentos() {
     table.style.display = 'none';
     
     // Tentar detectar porta antes de fazer requisição
-    const portaDetectada = await detectarPorta();
-    if (!portaDetectada) {
-        loading.innerHTML = '<div style="color: red; padding: 20px; text-align: center;"><strong>❌ Erro de Conexão</strong><br><br>Não foi possível conectar ao servidor Flask.<br><br>Verifique se o servidor está rodando:<br><code>cd backend && python3 app.py</code><br><br>Tentando portas: 5000, 5001, 5002, 5003</div>';
-        console.error('❌ Não foi possível detectar a porta do servidor');
-        return;
-    }
+    //const portaDetectada = await detectarPorta();
+    //if (!portaDetectada) {
+    //    loading.innerHTML = '<div style="color: red; padding: 20px; text-align: center;"><>❌ Erro de Conexão<///strong><br><br>Não foi possível conectar ao servidor Flask.<br><br>Verifique se o servidor está rodando:<br><code>cd //backend && python3 app.py</code><br><br>Tentando portas: 5000, 5001, 5002, 5003</div>';
+    //    console.error('❌ Não foi possível detectar a porta do servidor');
+    //    return;
+    //}
     
     try {
         const params = new URLSearchParams();
@@ -1185,11 +1073,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 const token = localStorage.getItem('admin_token');
                 
                 // Garantir que a porta foi detectada antes de fazer a requisição
-                const portaOk = await detectarPorta();
-                if (!portaOk) {
-                    alert('❌ Erro: Não foi possível conectar ao servidor Flask.\n\nVerifique se o servidor está rodando:\ncd backend && python3 app.py');
-                    return;
-                }
+                //const portaOk = await detectarPorta();
+                //if (!portaOk) {
+                //    alert('❌ Erro: Não foi possível conectar ao servidor Flask.\n\nVerifique se o servidor está rodando:\ncd //backend && python3 app.py');
+                //    return;
+                //}
                 
                 try {
                     // Preparar dados do agendamento (igual à página de agendamento)
@@ -1302,7 +1190,6 @@ async function deletarAgendamento(id) {
 
 // Inicializar
 (async function() {
-    await detectarPorta();
     
     // Carregar serviços disponíveis
     await carregarServicos();
