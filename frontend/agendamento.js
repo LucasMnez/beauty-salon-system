@@ -1360,6 +1360,13 @@ function renderizarCalendario14Dias() {
     header.textContent = dia;
     calendarGrid.appendChild(header);
   });
+  // Alinhar o 1º dia na coluna correta (Dom=0 ... Sáb=6)
+  const offset = hoje.getDay(); // se hoje é quinta, offset = 4
+  for (let i = 0; i < offset; i++) {
+    const empty = document.createElement("div");
+    empty.className = "calendar-day empty";
+    calendarGrid.appendChild(empty);
+  }
 
   if (DEBUG) if (DEBUG) console.log("📅 Renderizando calendário 14 dias");
   if (DEBUG)
