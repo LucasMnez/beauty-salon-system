@@ -9,3 +9,7 @@ fastapi
 uvicorn[standard]
 flask
 gunicorn
+sqlalchemy
+psycopg2-binary
+psycopg2
+dotenv

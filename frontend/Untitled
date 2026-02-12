@@ -1,11 +1,1 @@
-[2026-02-09 01:43:45 +0000] [3] [ERROR] Exception in worker process
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.11/site-packages/gunicorn/arbiter.py", line 684, in spawn_worker
-    worker.init_process()
-  File "/usr/local/lib/python3.11/site-packages/gunicorn/workers/base.py", line 136, in init_process
-    self.load_wsgi()
-  File "/usr/local/lib/python3.11/site-packages/gunicorn/workers/base.py", line 148, in load_wsgi
-    self.wsgi = self.app.wsgi()
-                ^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.11/site-packages/gunicorn/app/base.py", line 66, in wsgi
-    self.callable = self.load()
+hashlib
