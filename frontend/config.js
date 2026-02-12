@@ -91,10 +91,10 @@ function renderizarServicos() {
       return `
             <tr>
                 <td>${servico.nome}</td>
-                <td>R$ ${Number(servico.valor || 0)
+                <td style="text-align: right;">R$ ${Number(servico.valor || 0)
                   .toFixed(2)
                   .replace(".", ",")}</td>
-                <td>${duracaoFormatada}</td>
+                <td style="text-align: right;">${duracaoFormatada}</td>
                 <td>
                     <span class="status-badge ${servico.ativo ? "status-ativo" : "status-inativo"}">
                         ${servico.ativo ? "Ativo" : "Inativo"}
