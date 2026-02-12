@@ -89,6 +89,20 @@ async function carregarServicos() {
   }
 }
 
+function arrayHorariosParaPeriodos(lista) {
+  const periodos = { manhã: [], tarde: [], noite: [] };
+  (lista || []).forEach((h) => {
+    const hora = parseInt(String(h).split(":")[0], 10);
+    if (hora < 12) periodos.manhã.push(h);
+    else if (hora < 17) periodos.tarde.push(h);
+    else periodos.noite.push(h);
+  });
+  Object.keys(periodos).forEach((k) => {
+    if (periodos[k].length === 0) delete periodos[k];
+  });
+  return periodos;
+}
+
 // Selecionar serviço (usado apenas internamente no modal)
 function selecionarServico(nome, elemento) {
   servicoSelecionado = nome;
@@ -1228,7 +1242,10 @@ async function carregarDisponibilidade14Dias() {
       const dataStr = formatarData(data);
 
       if (disponibilidade[dataStr]) {
-        disponibilidadeFiltrada[dataStr] = disponibilidade[dataStr];
+        const v = disponibilidade[dataStr];
+        disponibilidadeFiltrada[dataStr] = Array.isArray(v)
+          ? arrayHorariosParaPeriodos(v)
+          : v;
       } else {
         // Se não tem dados do mês, buscar individualmente (fallback)
         if (DEBUG)
