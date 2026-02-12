@@ -4,8 +4,13 @@ let API_PORT = 5001;
 //let API_URL = `http://localhost:${API_PORT}/api`;
 
 const API_URL = "https://backend-production-039a.up.railway.app/api";
-const toMoneyNumber = (v) => Number(v ?? 0);
-
+const toMoneyNumber = (v) => {
+  const s = String(v ?? "0")
+    .trim()
+    .replace(",", ".");
+  const n = Number(s);
+  return Number.isFinite(n) ? n : 0;
+};
 // Estado da aplicação
 let servicos = {};
 let servicosSelecionados = []; // Mudança: agora é uma lista para múltiplos serviços
@@ -1339,31 +1344,15 @@ function renderizarCalendario14Dias() {
       disponibilidade: horariosDisponiveis,
     });
 
-    const periodosDisponiveis = horariosDisponiveis
-      ? Object.keys(horariosDisponiveis)
-      : [];
-    const totalHorarios = horariosDisponiveis
-      ? Object.values(horariosDisponiveis).reduce(
-          (sum, arr) => sum + (Array.isArray(arr) ? arr.length : 0),
-          0,
-        )
-      : 0;
+    let totalHorarios = 0;
 
-    const dayCell = document.createElement("div");
-    dayCell.className = "calendar-day";
-
-    if (isDomingo) {
-      dayCell.classList.add("domingo");
-    } else if (totalHorarios === 0) {
-      dayCell.classList.add("sem-disponibilidade");
-    } else {
-      dayCell.classList.add("clickable");
-      // Adicionar indicador de lotação
-      if (totalHorarios <= 3) {
-        dayCell.classList.add("poucos-horarios");
-      } else if (totalHorarios >= 8) {
-        dayCell.classList.add("muitos-horarios");
-      }
+    if (Array.isArray(horariosDisponiveis)) {
+      totalHorarios = horariosDisponiveis.length;
+    } else if (horariosDisponiveis && typeof horariosDisponiveis === "object") {
+      totalHorarios = Object.values(horariosDisponiveis).reduce(
+        (sum, arr) => sum + (Array.isArray(arr) ? arr.length : 0),
+        0,
+      );
     }
 
     if (dataStr === dataSelecionada) {
@@ -1404,10 +1393,17 @@ function atualizarIndicadoresLotacao() {
   let diasComHorarios = 0;
 
   Object.values(disponibilidade).forEach((horarios) => {
-    const count = Object.values(horarios).reduce(
-      (sum, arr) => sum + arr.length,
-      0,
-    );
+    let count = 0;
+
+    if (Array.isArray(horarios)) {
+      count = horarios.length;
+    } else if (horarios && typeof horarios === "object") {
+      count = Object.values(horarios).reduce(
+        (sum, arr) => sum + (Array.isArray(arr) ? arr.length : 0),
+        0,
+      );
+    }
+
     if (count > 0) {
       totalHorarios += count;
       diasComHorarios++;

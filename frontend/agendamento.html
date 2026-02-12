@@ -1,208 +1,274 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Raissa Nails Beauty - Agendamento</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
     <!-- Header e Navegação -->
     <header class="header">
-        <div class="container">
-            <div class="logo">
-                <img src="assets/logo.svg" alt="Raissa Nails Beauty" class="logo-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                <div class="logo-text" style="display:none;">💅 Raissa Nails</div>
-            </div>
-            <nav class="nav">
-                <ul class="nav-list">
-                    <li><a href="index.html">Inicio</a></li>
-                    <li><a href="servicos.html">Serviços</a></li>
-                    <li><a href="sobrenos.html">Sobre Nós</a></li>
-                    <li><a href="agendamento.html" class="active">Agendar</a></li>
-                </ul>
-                <button class="menu-toggle" id="menuToggle">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-            </nav>
+      <div class="container">
+        <div class="logo">
+          <img
+            src="assets/logo.svg"
+            alt="Raissa Nails Beauty"
+            class="logo-img"
+            onerror="
+              this.style.display = 'none';
+              this.nextElementSibling.style.display = 'block';
+            "
+          />
+          <div class="logo-text" style="display: none">💅 Raissa Nails</div>
         </div>
-    </header>
-
-    <!-- Menu Mobile -->
-    <div class="mobile-menu" id="mobileMenu">
-        <button class="close-menu" id="closeMenu">✕</button>
-        <ul class="mobile-nav-list">
+        <nav class="nav">
+          <ul class="nav-list">
             <li><a href="index.html">Inicio</a></li>
             <li><a href="servicos.html">Serviços</a></li>
             <li><a href="sobrenos.html">Sobre Nós</a></li>
             <li><a href="agendamento.html" class="active">Agendar</a></li>
-        </ul>
+          </ul>
+          <button class="menu-toggle" id="menuToggle">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Menu Mobile -->
+    <div class="mobile-menu" id="mobileMenu">
+      <button class="close-menu" id="closeMenu">✕</button>
+      <ul class="mobile-nav-list">
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="servicos.html">Serviços</a></li>
+        <li><a href="sobrenos.html">Sobre Nós</a></li>
+        <li><a href="agendamento.html" class="active">Agendar</a></li>
+      </ul>
     </div>
 
     <!-- Conteúdo Principal -->
     <main class="main-content">
-        <section class="booking-section">
-            <div class="container">
-                <h2 class="section-title">Agende seu Horário</h2>
-                
-                <!-- Grid: Próximos Horários e Ajuda lado a lado -->
-                <div class="horarios-ajuda-grid">
-                    <!-- Próximos Horários Disponíveis (Urgência) -->
-                    <div id="proximosHorarios" class="proximos-horarios-section">
-                        <h3>⏰ Próximos Horários Disponíveis</h3>
-                        <div id="horariosHojeAmanha" class="horarios-hoje-amanha">
-                            <div class="loading-text">Carregando horários...</div>
-                        </div>
-                        <button id="verMaisHorariosBtn" class="btn-secondary" style="display: none;">Ver mais horários</button>
-                    </div>
-                    
-                    <!-- Card de Ajuda - Sempre Visível -->
-                    <div class="ajuda-card">
-                        <div class="ajuda-header">
-                            <span class="ajuda-icon">📞</span>
-                            <h3>Precisa de Ajuda?</h3>
-                        </div>
-                        <p>Entre em contato conosco pelo WhatsApp para tirar dúvidas ou agendar diretamente:</p>
-                        <div class="contact-booking-item">
-                            <div class="contact-icon">📱</div>
-                            <div>
-                                <h4>WhatsApp</h4>
-                                <a href="https://wa.me/5511993940514?text=Olá!%20Gostaria%20de%20agendar%20um%20horário" target="_blank" class="whatsapp-link">
-                                    (11) 99394-0514
-                                </a>
-                            </div>
-                        </div>
-                        <a href="https://wa.me/5511993940514?text=Olá!%20Gostaria%20de%20agendar%20um%20horário" class="cta-button whatsapp-button" target="_blank" style="margin-top: 20px;">
-                            <span>💬</span> Falar no WhatsApp
-                        </a>
-                    </div>
-                </div>
+      <section class="booking-section">
+        <div class="container">
+          <h2 class="section-title">Agende seu Horário</h2>
 
-                <!-- Seleção de Serviço Primeiro -->
-                <div id="selecaoServicoInicial" class="selecao-servico-inicial">
-                    <h3>💅 Escolha seu Serviço</h3>
-                    <p>Selecione o serviço desejado para ver os horários disponíveis</p>
-                    <div id="servicosGrid" class="servicos-grid-inicial">
-                        <!-- Será preenchido via JavaScript -->
-                    </div>
-                </div>
-                
-                <!-- Grid: Calendário e Contato lado a lado -->
-                <div id="bookingGrid" class="booking-grid" style="display: none;">
-                    <!-- Calendário -->
-                    <div class="calendar-container">
-                        <div class="calendar-header">
-                            <button id="prevMonth" class="nav-btn">‹</button>
-                            <h3 id="currentMonth"></h3>
-                            <button id="nextMonth" class="nav-btn">›</button>
-                        </div>
-                        
-                        <div class="calendar-grid" id="calendarGrid"></div>
-                        
-                        <div class="legend">
-                            <div class="legend-item">
-                                <span class="legend-box clickable"></span>
-                                <span>Disponível</span>
-                            </div>
-                            <div class="legend-item">
-                                <span class="legend-box selected"></span>
-                                <span>Selecionado</span>
-                            </div>
-                            <div class="legend-item">
-                                <span class="legend-box domingo"></span>
-                                <span>Domingo (Fechado)</span>
-                            </div>
-                        </div>
-                        <div id="lotacaoInfo" class="lotacao-info">
-                            <!-- Será preenchido via JavaScript -->
-                        </div>
-                    </div>
-
-                    <!-- Seção de Contato -->
-                    <div class="contact-info-booking">
-                        <h3>📞 Precisa de Ajuda?</h3>
-                        <p>Entre em contato conosco pelo WhatsApp para tirar dúvidas ou agendar diretamente:</p>
-                        <div class="contact-booking-item">
-                            <div class="contact-icon">📱</div>
-                            <div>
-                                <h4>WhatsApp</h4>
-                                <a href="https://wa.me/5511993940514?text=Olá!%20Gostaria%20de%20agendar%20um%20horário" target="_blank" class="whatsapp-link">
-                                    (11) 99394-0514
-                                </a>
-                            </div>
-                        </div>
-                        <a href="https://wa.me/5511993940514?text=Olá!%20Gostaria%20de%20agendar%20um%20horário" class="cta-button whatsapp-button" target="_blank" style="margin-top: 20px;">
-                            <span>💬</span> Falar no WhatsApp
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Formulário de Agendamento -->
-                <div id="bookingFormContainer" class="booking-form-container" style="display: none;">
-                    <h3>Preencha seus Dados</h3>
-                    <form id="bookingForm" class="booking-form">
-                        <div class="form-group">
-                            <label for="nome">Nome Completo *</label>
-                            <input type="text" id="nome" name="nome" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="telefone">Telefone/WhatsApp *</label>
-                            <input type="tel" id="telefone" name="telefone" placeholder="(11) 99999-9999" required>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="resumo-agendamento">
-                                <p><strong>Serviço:</strong> <span id="resumo-servico"></span></p>
-                                <p><strong>Data:</strong> <span id="resumo-data"></span></p>
-                                <p><strong>Horário:</strong> <span id="resumo-horario"></span></p>
-                                <p class="valor-total"><strong>Valor Total: <span id="valor-total">R$ 0,00</span></strong></p>
-                            </div>
-                        </div>
-
-                        <div id="mensagem" class="mensagem"></div>
-
-                        <div class="form-actions">
-                            <button type="button" class="btn-secondary" id="cancelBtn">Cancelar</button>
-                            <button type="submit" class="cta-button" id="submitBtn">Criar Agendamento</button>
-                        </div>
-                    </form>
-                </div>
-
-                <!-- Link para Cliente -->
-                <div id="linkContainer" class="link-container" style="display: none;">
-                    <h3>Agendamento Confirmado!</h3>
-                    <p>Envie este link para a cliente:</p>
-                    <div class="link-box">
-                        <input type="text" id="linkAgendamento" readonly>
-                        <button id="copyLink" class="btn-copy">Copiar Link</button>
-                    </div>
-                    <a href="#" id="whatsappLink" class="whatsapp-link-btn" target="_blank">
-                        📱 Enviar por WhatsApp
-                    </a>
-                </div>
+          <!-- Grid: Próximos Horários e Ajuda lado a lado -->
+          <div class="horarios-ajuda-grid">
+            <!-- Próximos Horários Disponíveis (Urgência) -->
+            <div id="proximosHorarios" class="proximos-horarios-section">
+              <h3>⏰ Próximos Horários Disponíveis</h3>
+              <div id="horariosHojeAmanha" class="horarios-hoje-amanha">
+                <div class="loading-text">Carregando horários...</div>
+              </div>
+              <button
+                id="verMaisHorariosBtn"
+                class="btn-secondary"
+                style="display: none"
+              >
+                Ver mais horários
+              </button>
             </div>
-        </section>
+
+            <!-- Card de Ajuda - Sempre Visível -->
+            <div class="ajuda-card">
+              <div class="ajuda-header">
+                <span class="ajuda-icon">📞</span>
+                <h3>Precisa de Ajuda?</h3>
+              </div>
+              <p>
+                Entre em contato conosco pelo WhatsApp para tirar dúvidas ou
+                agendar diretamente:
+              </p>
+              <div class="contact-booking-item">
+                <div class="contact-icon">📱</div>
+                <div>
+                  <h4>WhatsApp</h4>
+                  <a
+                    href="https://wa.me/5511993940514?text=Olá!%20Gostaria%20de%20agendar%20um%20horário"
+                    target="_blank"
+                    class="whatsapp-link"
+                  >
+                    (11) 99394-0514
+                  </a>
+                </div>
+              </div>
+              <a
+                href="https://wa.me/5511993940514?text=Olá!%20Gostaria%20de%20agendar%20um%20horário"
+                class="cta-button whatsapp-button"
+                target="_blank"
+                style="margin-top: 20px"
+              >
+                <span>💬</span> Falar no WhatsApp
+              </a>
+            </div>
+          </div>
+
+          <!-- Seleção de Serviço Primeiro -->
+          <div id="selecaoServicoInicial" class="selecao-servico-inicial">
+            <h3>💅 Escolha seu Serviço</h3>
+            <p>Selecione o serviço desejado para ver os horários disponíveis</p>
+            <div id="servicosGrid" class="servicos-grid-inicial">
+              <!-- Será preenchido via JavaScript -->
+            </div>
+          </div>
+
+          <!-- Grid: Calendário e Contato lado a lado -->
+          <div id="bookingGrid" class="booking-grid" style="display: none">
+            <!-- Calendário -->
+            <div class="calendar-container">
+              <div class="calendar-header">
+                <button id="prevMonth" class="nav-btn">‹</button>
+                <h3 id="currentMonth"></h3>
+                <button id="nextMonth" class="nav-btn">›</button>
+              </div>
+
+              <div class="calendar-grid" id="calendarGrid"></div>
+
+              <div class="legend">
+                <div class="legend-item">
+                  <span class="legend-box clickable"></span>
+                  <span>Disponível</span>
+                </div>
+                <div class="legend-item">
+                  <span class="legend-box selected"></span>
+                  <span>Selecionado</span>
+                </div>
+                <div class="legend-item">
+                  <span class="legend-box domingo"></span>
+                  <span>Domingo (Fechado)</span>
+                </div>
+              </div>
+              <div id="lotacaoInfo" class="lotacao-info">
+                <!-- Será preenchido via JavaScript -->
+              </div>
+            </div>
+
+            <!-- Seção de Contato -->
+            <div class="contact-info-booking">
+              <h3>📞 Precisa de Ajuda?</h3>
+              <p>
+                Entre em contato conosco pelo WhatsApp para tirar dúvidas ou
+                agendar diretamente:
+              </p>
+              <div class="contact-booking-item">
+                <div class="contact-icon">📱</div>
+                <div>
+                  <h4>WhatsApp</h4>
+                  <a
+                    href="https://wa.me/5511993940514?text=Olá!%20Gostaria%20de%20agendar%20um%20horário"
+                    target="_blank"
+                    class="whatsapp-link"
+                  >
+                    (11) 99394-0514
+                  </a>
+                </div>
+              </div>
+              <a
+                href="https://wa.me/5511993940514?text=Olá!%20Gostaria%20de%20agendar%20um%20horário"
+                class="cta-button whatsapp-button"
+                target="_blank"
+                style="margin-top: 20px"
+              >
+                <span>💬</span> Falar no WhatsApp
+              </a>
+            </div>
+          </div>
+
+          <!-- Formulário de Agendamento -->
+          <div
+            id="bookingFormContainer"
+            class="booking-form-container"
+            style="display: none"
+          >
+            <h3>Preencha seus Dados</h3>
+            <form id="bookingForm" class="booking-form">
+              <div class="form-group">
+                <label for="nome">Nome Completo *</label>
+                <input type="text" id="nome" name="nome" required />
+              </div>
+
+              <div class="form-group">
+                <label for="telefone">Telefone/WhatsApp *</label>
+                <input
+                  type="tel"
+                  id="telefone"
+                  name="telefone"
+                  placeholder="(11) 99999-9999"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <div class="resumo-agendamento">
+                  <p>
+                    <strong>Serviço:</strong> <span id="resumo-servico"></span>
+                  </p>
+                  <p><strong>Data:</strong> <span id="resumo-data"></span></p>
+                  <p>
+                    <strong>Horário:</strong> <span id="resumo-horario"></span>
+                  </p>
+                  <p class="valor-total">
+                    <strong
+                      >Valor Total:
+                      <span id="valor-total">R$ 0,00</span></strong
+                    >
+                  </p>
+                </div>
+              </div>
+
+              <div id="mensagem" class="mensagem"></div>
+
+              <div class="form-actions">
+                <button type="button" class="btn-secondary" id="cancelBtn">
+                  Cancelar
+                </button>
+                <button type="submit" class="cta-button" id="submitBtn">
+                  Criar Agendamento
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Link para Cliente -->
+          <div id="linkContainer" class="link-container" style="display: none">
+            <h3>Agendamento Confirmado!</h3>
+            <p>Envie este link para a cliente:</p>
+            <div class="link-box">
+              <input type="text" id="linkAgendamento" readonly />
+              <button id="copyLink" class="btn-copy">Copiar Link</button>
+            </div>
+            <a
+              href="#"
+              id="whatsappLink"
+              class="whatsapp-link-btn"
+              target="_blank"
+            >
+              📱 Enviar por WhatsApp
+            </a>
+          </div>
+        </div>
+      </section>
     </main>
 
     <!-- Footer -->
     <footer class="footer">
-        <div class="container">
-            <p>&copy; 2025 by Raissa Menezes</p>
-            <nav class="footer-nav">
-                <ul>
-                    <li><a href="index.html">Inicio</a></li>
-                    <li><a href="servicos.html">Serviços</a></li>
-                    <li><a href="sobrenos.html">Sobre Nós</a></li>
-                    <li><a href="agendamento.html">Agendar</a></li>
-                </ul>
-            </nav>
-        </div>
+      <div class="container">
+        <p>&copy; 2025 by Raissa Menezes</p>
+        <nav class="footer-nav">
+          <ul>
+            <li><a href="index.html">Inicio</a></li>
+            <li><a href="servicos.html">Serviços</a></li>
+            <li><a href="sobrenos.html">Sobre Nós</a></li>
+            <li><a href="agendamento.html">Agendar</a></li>
+          </ul>
+        </nav>
+      </div>
     </footer>
 
-    <script src="script.js"></script>
-    <script src="agendamento.js"></script>
-</body>
+    <script src="script.js?v=20260212-1"></script>
+    <script src="agendamento.js?v=20260212-3"></script>
+  </body>
 </html>
