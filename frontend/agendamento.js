@@ -108,7 +108,7 @@ function mostrarSelecaoServico(data) {
     servicosHTML += `
             <button type="button" class="servico-card-select servico-btn-modal ${isSelected ? "selected" : ""}" data-servico="${nomeServico}">
                 <h4>${nomeServico}</h4>
-                <p class="price">R$ ${valor.toFixed(2).replace(".", ",")}</p>
+                <p class="price">R$ ${toMoneyNumber(valor).toFixed(2).replace(".", ",")}</p>
                 ${isSelected ? '<span class="check-mark">✓</span>' : ""}
             </button>
         `;
@@ -1110,7 +1110,7 @@ function renderizarServicosIniciais() {
 
     servicoCard.innerHTML = `
             <h4>${nomeServico}</h4>
-            <p class="price">R$ ${valor.toFixed(2).replace(".", ",")}</p>
+            <p class="price">R$ ${toMoneyNumber(valor).toFixed(2).replace(".", ",")}</p>
         `;
 
     servicoCard.addEventListener("click", () => {

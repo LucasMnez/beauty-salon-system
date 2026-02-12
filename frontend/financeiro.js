@@ -112,7 +112,13 @@ async function carregarDadosFinanceiros() {
 function atualizarResumo() {
   if (!dadosFinanceiros || !dadosFinanceiros.resumo) return;
 
-  const resumo = dadosFinanceiros.resumo;
+  const resumo = dadosFinanceiros.resumo || {};
+  const totalPorForma = resumo.total_por_forma_pagamento || {};
+  const totalPorStatus = resumo.total_por_status || {};
+  const totalPorCliente = resumo.total_por_cliente || [];
+  const totalPorMes = resumo.total_por_mes || [];
+  const totalPago = Number(resumo.total_pago || 0);
+  const totalNaoPago = Number(resumo.total_nao_pago || 0);
 
   // Total faturado
   document.getElementById("total-faturado").textContent = formatarMoeda(
@@ -156,11 +162,11 @@ function atualizarTabelasResumo() {
     pendente: "Pendente",
   };
 
-  if (Object.keys(resumo.total_por_forma_pagamento).length === 0) {
+  if (Object.keys(totalPorForma).length === 0) {
     tbodyForma.innerHTML =
       '<tr><td colspan="2" class="empty-state">Nenhum dado</td></tr>';
   } else {
-    tbodyForma.innerHTML = Object.entries(resumo.total_por_forma_pagamento)
+    tbodyForma.innerHTML = Object.entries(totalPorForma)
       .sort((a, b) => b[1] - a[1])
       .map(
         ([forma, total]) => `
@@ -182,11 +188,11 @@ function atualizarTabelasResumo() {
     cancelado: "Cancelado",
   };
 
-  if (Object.keys(resumo.total_por_status).length === 0) {
+  if (Object.keys(totalPorStatus).length === 0) {
     tbodyStatus.innerHTML =
       '<tr><td colspan="2" class="empty-state">Nenhum dado</td></tr>';
   } else {
-    tbodyStatus.innerHTML = Object.entries(resumo.total_por_status)
+    tbodyStatus.innerHTML = Object.entries(totalPorStatus)
       .sort((a, b) => b[1] - a[1])
       .map(
         ([status, total]) => `
@@ -201,11 +207,11 @@ function atualizarTabelasResumo() {
 
   // Tabela por cliente
   const tbodyCliente = document.getElementById("tabela-cliente");
-  if (resumo.total_por_cliente.length === 0) {
+  if (totalPorCliente.length === 0) {
     tbodyCliente.innerHTML =
       '<tr><td colspan="3" class="empty-state">Nenhum dado</td></tr>';
   } else {
-    tbodyCliente.innerHTML = resumo.total_por_cliente
+    tbodyCliente.innerHTML = totalPorCliente
       .slice(0, 10) // Top 10 clientes
       .map(
         (cliente) => `
@@ -221,11 +227,11 @@ function atualizarTabelasResumo() {
 
   // Tabela por mês
   const tbodyMes = document.getElementById("tabela-mes");
-  if (resumo.total_por_mes.length === 0) {
+  if (totalPorMes.length === 0) {
     tbodyMes.innerHTML =
       '<tr><td colspan="2" class="empty-state">Nenhum dado</td></tr>';
   } else {
-    tbodyMes.innerHTML = resumo.total_por_mes
+    tbodyMes.innerHTML = totalPorMes
       .map((item) => {
         const [ano, mes] = item.mes.split("-");
         const mesNome = new Date(ano, parseInt(mes) - 1).toLocaleDateString(
@@ -252,8 +258,8 @@ function atualizarTabelasResumo() {
   };
 
   const statusPagamentoData = [
-    { label: "Pago", valor: resumo.total_pago || 0 },
-    { label: "Não Pago", valor: resumo.total_nao_pago || 0 },
+    { label: "Pago", valor: totalPago || 0 },
+    { label: "Não Pago", valor: totalPago || 0 },
   ];
 
   if (statusPagamentoData.every((item) => item.valor === 0)) {
@@ -361,7 +367,8 @@ function limparFiltros() {
 
 // Formatar moeda
 function formatarMoeda(valor) {
-  return `R$ ${valor
+  const v = Number(valor || 0);
+  return `R$ ${v
     .toFixed(2)
     .replace(".", ",")
     .replace(/\B(?=(\d{3})+(?!\d))/g, ".")}`;
