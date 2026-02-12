@@ -1241,7 +1241,7 @@ async function carregarDisponibilidade14Dias() {
       data.setDate(data.getDate() + i);
       const dataStr = formatarData(data);
 
-      if (disponibilidade[dataStr]) {
+      if (disponibilidade[dataStr] !== undefined) {
         const v = disponibilidade[dataStr];
         disponibilidadeFiltrada[dataStr] = Array.isArray(v)
           ? arrayHorariosParaPeriodos(v)
