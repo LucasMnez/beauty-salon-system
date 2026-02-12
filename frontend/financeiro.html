@@ -1,373 +1,397 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Financeiro - Raissa Nails Beauty</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css" />
     <style>
-        .financeiro-container {
-            max-width: 1600px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .financeiro-header {
-            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-            color: white;
-            padding: 25px 30px;
-            border-radius: 12px;
-            margin-bottom: 25px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .financeiro-header h1 {
-            margin: 0;
-            font-size: 2em;
-            font-weight: 600;
-        }
-        .financeiro-header p {
-            margin: 5px 0 0 0;
-            opacity: 0.9;
-            font-size: 0.95em;
-        }
-        .back-btn {
-            background: rgba(255,255,255,0.2);
-            color: white;
-            border: 1px solid rgba(255,255,255,0.3);
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-            text-decoration: none;
-            display: inline-block;
-            transition: all 0.3s;
-        }
-        .back-btn:hover {
-            background: rgba(255,255,255,0.3);
-            transform: translateY(-1px);
-        }
-        .filters {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-        }
-        .filters input, .filters select {
-            padding: 10px 14px;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 14px;
-        }
-        .filters input:focus, .filters select:focus {
-            outline: none;
-            border-color: #28a745;
-            box-shadow: 0 0 0 3px rgba(40,167,69,0.1);
-        }
-        .btn-filter {
-            background: #28a745;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s;
-        }
-        .btn-filter:hover {
-            background: #218838;
-        }
-        .resumo-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 25px;
-        }
-        .resumo-card {
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        }
-        .resumo-card h3 {
-            margin: 0 0 10px 0;
-            color: #666;
-            font-size: 14px;
-            text-transform: uppercase;
-            font-weight: 500;
-        }
-        .resumo-card .valor {
-            font-size: 2.5em;
-            font-weight: 700;
-            color: #28a745;
-        }
-        .tabelas-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 20px;
-            margin-bottom: 25px;
-        }
-        .tabela-container {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-        }
-        .tabela-container h3 {
-            margin: 0 0 15px 0;
-            color: #333;
-            font-size: 1.2em;
-        }
-        .tabela-resumo {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .tabela-resumo th,
-        .tabela-resumo td {
-            padding: 10px;
-            text-align: left;
-            border-bottom: 1px solid #f0f0f0;
-        }
-        .tabela-resumo th {
-            background: #f8f9fa;
-            font-weight: 600;
-            color: #666;
-            font-size: 12px;
-            text-transform: uppercase;
-        }
-        .tabela-resumo tr:hover {
-            background: #f8f9fa;
-        }
-        .tabela-resumo .valor {
-            font-weight: 600;
-            color: #28a745;
-        }
-        .agendamentos-table {
-            background: white;
-            border-radius: 12px;
-            overflow-x: auto;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        thead {
-            background: #28a745;
-            color: white;
-        }
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #f0f0f0;
-        }
-        th {
-            font-weight: 600;
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        tbody tr:hover {
-            background: #f8f9fa;
-        }
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #666;
-        }
-        .empty-state {
-            text-align: center;
-            padding: 40px;
-            color: #999;
-        }
-        .empty-state div:first-child {
-            font-size: 3em;
-            margin-bottom: 10px;
-        }
+      .financeiro-container {
+        max-width: 1600px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .financeiro-header {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+        padding: 25px 30px;
+        border-radius: 12px;
+        margin-bottom: 25px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .financeiro-header h1 {
+        margin: 0;
+        font-size: 2em;
+        font-weight: 600;
+      }
+      .financeiro-header p {
+        margin: 5px 0 0 0;
+        opacity: 0.9;
+        font-size: 0.95em;
+      }
+      .back-btn {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        padding: 10px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s;
+      }
+      .back-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-1px);
+      }
+      .filters {
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+      }
+      .filters input,
+      .filters select {
+        padding: 10px 14px;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 14px;
+      }
+      .filters input:focus,
+      .filters select:focus {
+        outline: none;
+        border-color: #28a745;
+        box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+      }
+      .btn-filter {
+        background: #28a745;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.3s;
+      }
+      .btn-filter:hover {
+        background: #218838;
+      }
+      .resumo-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 25px;
+      }
+      .resumo-card {
+        background: white;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      }
+      .resumo-card h3 {
+        margin: 0 0 10px 0;
+        color: #666;
+        font-size: 14px;
+        text-transform: uppercase;
+        font-weight: 500;
+      }
+      .resumo-card .valor {
+        font-size: 2.5em;
+        font-weight: 700;
+        color: #28a745;
+      }
+      .tabelas-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 20px;
+        margin-bottom: 25px;
+      }
+      .tabela-container {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+      }
+      .tabela-container h3 {
+        margin: 0 0 15px 0;
+        color: #333;
+        font-size: 1.2em;
+      }
+      .tabela-resumo {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .tabela-resumo th,
+      .tabela-resumo td {
+        padding: 10px;
+        text-align: left;
+        border-bottom: 1px solid #f0f0f0;
+      }
+      .tabela-resumo th {
+        background: #f8f9fa;
+        font-weight: 600;
+        color: #666;
+        font-size: 12px;
+        text-transform: uppercase;
+      }
+      .tabela-resumo tr:hover {
+        background: #f8f9fa;
+      }
+      .tabela-resumo .valor {
+        font-weight: 600;
+        color: #28a745;
+      }
+      .agendamentos-table {
+        background: white;
+        border-radius: 12px;
+        overflow-x: auto;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      thead {
+        background: #28a745;
+        color: white;
+      }
+      th,
+      td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #f0f0f0;
+      }
+      th {
+        font-weight: 600;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      tbody tr:hover {
+        background: #f8f9fa;
+      }
+      .loading {
+        text-align: center;
+        padding: 40px;
+        color: #666;
+      }
+      .empty-state {
+        text-align: center;
+        padding: 40px;
+        color: #999;
+      }
+      .empty-state div:first-child {
+        font-size: 3em;
+        margin-bottom: 10px;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="financeiro-container">
-        <div class="financeiro-header">
-            <div>
-                <h1>💰 Financeiro</h1>
-                <p>Acompanhamento de faturamento e receitas</p>
-            </div>
-            <a href="admin.html" class="back-btn">← Voltar</a>
+      <div class="financeiro-header">
+        <div>
+          <h1>💰 Financeiro</h1>
+          <p>Acompanhamento de faturamento e receitas</p>
+        </div>
+        <a href="admin.html" class="back-btn">← Voltar</a>
+      </div>
+
+      <!-- Filtros -->
+      <div class="filters">
+        <input
+          type="text"
+          id="filter-cliente"
+          placeholder="Buscar por cliente..."
+        />
+        <input type="month" id="filter-mes" placeholder="Mês" />
+        <select id="filter-forma-pagamento">
+          <option value="">Todas as formas</option>
+          <option value="pix">PIX</option>
+          <option value="cartao">Cartão</option>
+          <option value="pendente">Pendente</option>
+        </select>
+        <select id="filter-status">
+          <option value="">Todos os status</option>
+          <option value="pendente">Pendente</option>
+          <option value="confirmado">Confirmado</option>
+          <option value="concluido">Concluído</option>
+          <option value="cancelado">Cancelado</option>
+        </select>
+        <select id="filter-pago">
+          <option value="">Todos</option>
+          <option value="true">Pago</option>
+          <option value="false">Não Pago</option>
+        </select>
+        <input type="date" id="filter-data-inicio" placeholder="Data início" />
+        <input type="date" id="filter-data-fim" placeholder="Data fim" />
+        <button class="btn-filter" onclick="aplicarFiltros()">
+          🔍 Filtrar
+        </button>
+        <button
+          class="btn-filter"
+          onclick="limparFiltros()"
+          style="background: #6c757d"
+        >
+          🔄 Limpar
+        </button>
+      </div>
+
+      <!-- Cards de Resumo -->
+      <div class="resumo-cards">
+        <div class="resumo-card">
+          <h3>Total Faturado</h3>
+          <div class="valor" id="total-faturado">R$ 0,00</div>
+        </div>
+        <div class="resumo-card">
+          <h3>Total Recebido</h3>
+          <div class="valor" id="total-recebido" style="color: #28a745">
+            R$ 0,00
+          </div>
+        </div>
+        <div class="resumo-card">
+          <h3>Total Pendente</h3>
+          <div class="valor" id="total-pendente" style="color: #ffc107">
+            R$ 0,00
+          </div>
+        </div>
+        <div class="resumo-card">
+          <h3>Total de Agendamentos</h3>
+          <div class="valor" id="total-agendamentos" style="color: #007bff">
+            0
+          </div>
+        </div>
+        <div class="resumo-card">
+          <h3>Ticket Médio</h3>
+          <div class="valor" id="ticket-medio" style="color: #6c757d">
+            R$ 0,00
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabelas de Resumo -->
+      <div class="tabelas-grid">
+        <div class="tabela-container">
+          <h3>💰 Por Forma de Pagamento</h3>
+          <table class="tabela-resumo">
+            <thead>
+              <tr>
+                <th>Forma</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody id="tabela-forma-pagamento">
+              <tr>
+                <td colspan="2" class="loading">Carregando...</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
 
-        <!-- Filtros -->
-        <div class="filters">
-            <input type="text" id="filter-cliente" placeholder="Buscar por cliente...">
-            <input type="month" id="filter-mes" placeholder="Mês">
-            <select id="filter-forma-pagamento">
-                <option value="">Todas as formas</option>
-                <option value="pix">PIX</option>
-                <option value="cartao">Cartão</option>
-                <option value="pendente">Pendente</option>
-            </select>
-            <select id="filter-status">
-                <option value="">Todos os status</option>
-                <option value="pendente">Pendente</option>
-                <option value="confirmado">Confirmado</option>
-                <option value="concluido">Concluído</option>
-                <option value="cancelado">Cancelado</option>
-            </select>
-            <select id="filter-pago">
-                <option value="">Todos</option>
-                <option value="true">Pago</option>
-                <option value="false">Não Pago</option>
-            </select>
-            <input type="date" id="filter-data-inicio" placeholder="Data início">
-            <input type="date" id="filter-data-fim" placeholder="Data fim">
-            <button class="btn-filter" onclick="aplicarFiltros()">🔍 Filtrar</button>
-            <button class="btn-filter" onclick="limparFiltros()" style="background: #6c757d;">🔄 Limpar</button>
+        <div class="tabela-container">
+          <h3>📊 Por Status</h3>
+          <table class="tabela-resumo">
+            <thead>
+              <tr>
+                <th>Status</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody id="tabela-status">
+              <tr>
+                <td colspan="2" class="loading">Carregando...</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
 
-        <!-- Cards de Resumo -->
-        <div class="resumo-cards">
-            <div class="resumo-card">
-                <h3>Total Faturado</h3>
-                <div class="valor" id="total-faturado">R$ 0,00</div>
-            </div>
-            <div class="resumo-card">
-                <h3>Total Recebido</h3>
-                <div class="valor" id="total-recebido" style="color: #28a745;">R$ 0,00</div>
-            </div>
-            <div class="resumo-card">
-                <h3>Total Pendente</h3>
-                <div class="valor" id="total-pendente" style="color: #ffc107;">R$ 0,00</div>
-            </div>
-            <div class="resumo-card">
-                <h3>Total de Agendamentos</h3>
-                <div class="valor" id="total-agendamentos" style="color: #007bff;">0</div>
-            </div>
-            <div class="resumo-card">
-                <h3>Ticket Médio</h3>
-                <div class="valor" id="ticket-medio" style="color: #6c757d;">R$ 0,00</div>
-            </div>
+        <div class="tabela-container">
+          <h3>👥 Por Cliente</h3>
+          <table class="tabela-resumo">
+            <thead>
+              <tr>
+                <th>Cliente</th>
+                <th>Qtd</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody id="tabela-cliente">
+              <tr>
+                <td colspan="3" class="loading">Carregando...</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
 
-        <!-- Tabelas de Resumo -->
-        <div class="tabelas-grid">
-            <div class="tabela-container">
-                <h3>💰 Por Forma de Pagamento</h3>
-                <table class="tabela-resumo">
-                    <thead>
-                        <tr>
-                            <th>Forma</th>
-                            <th>Total</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabela-forma-pagamento">
-                        <tr>
-                            <td colspan="2" class="loading">Carregando...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="tabela-container">
-                <h3>📊 Por Status</h3>
-                <table class="tabela-resumo">
-                    <thead>
-                        <tr>
-                            <th>Status</th>
-                            <th>Total</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabela-status">
-                        <tr>
-                            <td colspan="2" class="loading">Carregando...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="tabela-container">
-                <h3>👥 Por Cliente</h3>
-                <table class="tabela-resumo">
-                    <thead>
-                        <tr>
-                            <th>Cliente</th>
-                            <th>Qtd</th>
-                            <th>Total</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabela-cliente">
-                        <tr>
-                            <td colspan="3" class="loading">Carregando...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="tabela-container">
-                <h3>📅 Por Mês</h3>
-                <table class="tabela-resumo">
-                    <thead>
-                        <tr>
-                            <th>Mês</th>
-                            <th>Total</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabela-mes">
-                        <tr>
-                            <td colspan="2" class="loading">Carregando...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="tabela-container">
-                <h3>💵 Por Status de Pagamento</h3>
-                <table class="tabela-resumo">
-                    <thead>
-                        <tr>
-                            <th>Status</th>
-                            <th>Total</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabela-status-pagamento">
-                        <tr>
-                            <td colspan="2" class="loading">Carregando...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+        <div class="tabela-container">
+          <h3>📅 Por Mês</h3>
+          <table class="tabela-resumo">
+            <thead>
+              <tr>
+                <th>Mês</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody id="tabela-mes">
+              <tr>
+                <td colspan="2" class="loading">Carregando...</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
 
-        <!-- Tabela Detalhada -->
-        <div class="agendamentos-table">
-            <h3 style="padding: 20px 20px 0 20px; margin: 0;">📋 Detalhamento de Agendamentos</h3>
-            <div id="loading" class="loading">Carregando dados financeiros...</div>
-            <table id="tabela-detalhada" style="display: none;">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Cliente</th>
-                        <th>Data</th>
-                        <th>Horário</th>
-                        <th>Serviços</th>
-                        <th>Valor</th>
-                        <th>Forma Pagamento</th>
-                        <th>Status</th>
-                        <th>Pago</th>
-                        <th>Data Pagamento</th>
-                    </tr>
-                </thead>
-                <tbody id="tabela-detalhada-body">
-                </tbody>
-            </table>
+        <div class="tabela-container">
+          <h3>💵 Por Status de Pagamento</h3>
+          <table class="tabela-resumo">
+            <thead>
+              <tr>
+                <th>Status</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody id="tabela-status-pagamento">
+              <tr>
+                <td colspan="2" class="loading">Carregando...</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
+      </div>
+
+      <!-- Tabela Detalhada -->
+      <div class="agendamentos-table">
+        <h3 style="padding: 20px 20px 0 20px; margin: 0">
+          📋 Detalhamento de Agendamentos
+        </h3>
+        <div id="loading" class="loading">Carregando dados financeiros...</div>
+        <table id="tabela-detalhada" style="display: none">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Cliente</th>
+              <th>Data</th>
+              <th>Horário</th>
+              <th>Serviços</th>
+              <th>Valor</th>
+              <th>Forma Pagamento</th>
+              <th>Status</th>
+              <th>Pago</th>
+              <th>Data Pagamento</th>
+            </tr>
+          </thead>
+          <tbody id="tabela-detalhada-body"></tbody>
+        </table>
+      </div>
     </div>
 
     <script src="financeiro.js"></script>
-</body>
+  </body>
 </html>

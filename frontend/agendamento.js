@@ -1125,16 +1125,14 @@ function renderizarServicosIniciais() {
 
   Object.keys(servicos).forEach((nomeServico) => {
     const valor = toMoneyNumber(servicos[nomeServico] || 0);
-    const valorFormatado = valor.toFixed(2).replace(".", ",");
     const servicoCard = document.createElement("div");
     servicoCard.className = "servico-card-inicial";
     servicoCard.dataset.servico = nomeServico;
 
     servicoCard.innerHTML = `
-            <h4>${nomeServico}</h4>
-            <p class="price">R$ ${toMoneyNumber(valorFormatado).toFixed(2).replace(".", ",")}</p>
-        `;
-
+    <h4>${nomeServico}</h4>
+    <p class="price">R$ ${valor.toFixed(2).replace(".", ",")}</p>
+  `;
     servicoCard.addEventListener("click", () => {
       // Selecionar serviço e mostrar calendário
       servicosSelecionados = [nomeServico];

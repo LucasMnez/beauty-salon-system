@@ -1,6 +1,7 @@
 // Configuração da API
 // Usar caminho relativo quando servido pelo mesmo servidor Flask
 // Isso evita problemas de CORS e funciona independente da porta
+const DEBUG = false;
 const API_URL = "https://backend-production-039a.up.railway.app/api";
 const toNumber = (v) => Number(v ?? 0);
 const toMoneyNumber = (v) => Number(v ?? 0);
@@ -27,7 +28,7 @@ async function carregarAgendamentos() {
   //const portaDetectada = await detectarPorta();
   //if (!portaDetectada) {
   //    loading.innerHTML = '<div style="color: red; padding: 20px; text-align: center;"><>❌ Erro de Conexão<///strong><br><br>Não foi possível conectar ao servidor Flask.<br><br>Verifique se o servidor está rodando:<br><code>cd //backend && python3 app.py</code><br><br>Tentando portas: 5000, 5001, 5002, 5003</div>';
-  //    console.error('❌ Não foi possível detectar a porta do servidor');
+  //    if (DEBUG) console.error('❌ Não foi possível detectar a porta do servidor');
   //    return;
   //}
 
@@ -57,16 +58,19 @@ async function carregarAgendamentos() {
     }
 
     const urlCompleta = `${API_URL}/admin/agendamentos?${params.toString()}`;
-    console.log("📥 Carregando agendamentos...", urlCompleta);
-    console.log("   API_URL:", API_URL);
-    console.log("   URL completa:", urlCompleta);
+    if (DEBUG)
+      if (DEBUG) console.log("📥 Carregando agendamentos...", urlCompleta);
+    if (DEBUG) if (DEBUG) console.log("   API_URL:", API_URL);
+    if (DEBUG) if (DEBUG) console.log("   URL completa:", urlCompleta);
 
-    console.log("📤 Fazendo requisição:", {
-      url: urlCompleta,
-      method: "GET",
-      headers: headers,
-      temToken: !!token,
-    });
+    if (DEBUG)
+      if (DEBUG)
+        console.log("📤 Fazendo requisição:", {
+          url: urlCompleta,
+          method: "GET",
+          headers: headers,
+          temToken: !!token,
+        });
 
     let response;
     try {
@@ -78,20 +82,24 @@ async function carregarAgendamentos() {
         mode: "cors", // Garantir modo CORS
       });
     } catch (fetchError) {
-      console.error("❌ Erro na requisição fetch:", fetchError);
-      console.error("   Tipo:", fetchError.name);
-      console.error("   Mensagem:", fetchError.message);
+      if (DEBUG)
+        if (DEBUG) console.error("❌ Erro na requisição fetch:", fetchError);
+      if (DEBUG) if (DEBUG) console.error("   Tipo:", fetchError.name);
+      if (DEBUG) if (DEBUG) console.error("   Mensagem:", fetchError.message);
       throw new Error(
         `Erro de conexão: ${fetchError.message}. Verifique se o servidor Flask está rodando na porta correta.`,
       );
     }
 
-    console.log("📊 Status da resposta:", response.status);
-    console.log("📊 Response OK:", response.ok);
-    console.log(
-      "📊 Response headers:",
-      Object.fromEntries(response.headers.entries()),
-    );
+    if (DEBUG)
+      if (DEBUG) console.log("📊 Status da resposta:", response.status);
+    if (DEBUG) if (DEBUG) console.log("📊 Response OK:", response.ok);
+    if (DEBUG)
+      if (DEBUG)
+        console.log(
+          "📊 Response headers:",
+          Object.fromEntries(response.headers.entries()),
+        );
 
     if (!response.ok) {
       if (response.status === 401) {
@@ -99,26 +107,33 @@ async function carregarAgendamentos() {
         return;
       }
       const errorText = await response.text();
-      console.error("❌ Erro na resposta:", errorText);
+      if (DEBUG) if (DEBUG) console.error("❌ Erro na resposta:", errorText);
       throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
     }
 
     const data = await response.json();
-    console.log("📋 Agendamentos recebidos:", data.length, "itens");
-    console.log("📋 Dados completos:", data);
+    if (DEBUG)
+      if (DEBUG)
+        console.log("📋 Agendamentos recebidos:", data.length, "itens");
+    if (DEBUG) if (DEBUG) console.log("📋 Dados completos:", data);
 
     // Verificar se há dados quando não deveria ter
     if (data.length > 0) {
-      console.log(
-        "⚠️ ATENÇÃO: Recebidos agendamentos do servidor:",
-        data.length,
-      );
-      console.log(
-        "   Primeiros IDs:",
-        data.slice(0, 5).map((a) => a.id),
-      );
+      if (DEBUG)
+        if (DEBUG)
+          console.log(
+            "⚠️ ATENÇÃO: Recebidos agendamentos do servidor:",
+            data.length,
+          );
+      if (DEBUG)
+        if (DEBUG)
+          console.log(
+            "   Primeiros IDs:",
+            data.slice(0, 5).map((a) => a.id),
+          );
     } else {
-      console.log("✅ Nenhum agendamento recebido (banco vazio)");
+      if (DEBUG)
+        if (DEBUG) console.log("✅ Nenhum agendamento recebido (banco vazio)");
     }
 
     agendamentos = data;
@@ -128,11 +143,12 @@ async function carregarAgendamentos() {
     loading.style.display = "none";
     table.style.display = "table";
   } catch (error) {
-    console.error("❌ Erro ao carregar agendamentos:", error);
-    console.error("   Tipo:", error.name);
-    console.error("   Mensagem:", error.message);
-    console.error("   Stack:", error.stack);
-    console.error("   API_URL:", API_URL);
+    if (DEBUG)
+      if (DEBUG) console.error("❌ Erro ao carregar agendamentos:", error);
+    if (DEBUG) if (DEBUG) console.error("   Tipo:", error.name);
+    if (DEBUG) if (DEBUG) console.error("   Mensagem:", error.message);
+    if (DEBUG) if (DEBUG) console.error("   Stack:", error.stack);
+    if (DEBUG) if (DEBUG) console.error("   API_URL:", API_URL);
 
     const urlTentada = `${API_URL}/admin/agendamentos`;
 
@@ -341,7 +357,7 @@ async function atualizarStatus(id, novoStatus) {
     await carregarAgendamentos();
     alert("Status atualizado com sucesso!");
   } catch (error) {
-    console.error("Erro ao atualizar status:", error);
+    if (DEBUG) console.error("Erro ao atualizar status:", error);
     alert("Erro ao atualizar status. Tente novamente.");
   }
 }
@@ -414,26 +430,28 @@ async function verificarAutenticacao() {
     if (!response.ok) {
       if (response.status === 401) {
         // Não autenticado - redirecionar para login
-        console.log("Não autenticado, redirecionando para login...");
+        if (DEBUG) console.log("Não autenticado, redirecionando para login...");
         window.location.href = "login.html";
         return false;
       }
       // Outro erro HTTP - tentar novamente uma vez antes de redirecionar
-      console.warn("Erro HTTP ao verificar autenticação:", response.status);
+      if (DEBUG)
+        console.warn("Erro HTTP ao verificar autenticação:", response.status);
       return false;
     }
 
     const result = await response.json();
     if (!result.authenticated) {
-      console.log("Sessão não autenticada, redirecionando para login...");
+      if (DEBUG)
+        console.log("Sessão não autenticada, redirecionando para login...");
       window.location.href = "login.html";
       return false;
     }
 
-    console.log("✅ Autenticação verificada com sucesso");
+    if (DEBUG) console.log("✅ Autenticação verificada com sucesso");
     return true;
   } catch (error) {
-    console.error("Erro ao verificar autenticação:", error);
+    if (DEBUG) console.error("Erro ao verificar autenticação:", error);
     // Não redirecionar imediatamente em caso de erro de rede
     // Pode ser um problema temporário
     return false;
@@ -490,9 +508,10 @@ async function limparTodosAgendamentos() {
   }
 
   try {
-    console.log("🗑️ Iniciando limpeza de agendamentos...");
-    console.log("Token:", token ? token.substring(0, 20) + "..." : "Nenhum");
-    console.log("API_URL:", API_URL);
+    if (DEBUG) console.log("🗑️ Iniciando limpeza de agendamentos...");
+    if (DEBUG)
+      console.log("Token:", token ? token.substring(0, 20) + "..." : "Nenhum");
+    if (DEBUG) console.log("API_URL:", API_URL);
 
     const headers = {
       "Content-Type": "application/json",
@@ -500,10 +519,11 @@ async function limparTodosAgendamentos() {
       Authorization: `Bearer ${token}`,
     };
 
-    console.log(
-      "Enviando requisição para:",
-      `${API_URL}/admin/limpar-agendamentos`,
-    );
+    if (DEBUG)
+      console.log(
+        "Enviando requisição para:",
+        `${API_URL}/admin/limpar-agendamentos`,
+      );
 
     const response = await fetch(`${API_URL}/admin/limpar-agendamentos`, {
       method: "POST",
@@ -511,11 +531,11 @@ async function limparTodosAgendamentos() {
       headers: headers,
     });
 
-    console.log("Status da resposta:", response.status);
-    console.log("Status OK?", response.ok);
+    if (DEBUG) console.log("Status da resposta:", response.status);
+    if (DEBUG) console.log("Status OK?", response.ok);
 
     const data = await response.json();
-    console.log("Resposta do servidor:", data);
+    if (DEBUG) console.log("Resposta do servidor:", data);
 
     if (response.ok && data.success) {
       alert(`✅ ${data.message}`);
@@ -542,7 +562,7 @@ async function limparTodosAgendamentos() {
       // Forçar atualização das estatísticas
       atualizarStats();
     } else {
-      console.error("Erro na resposta:", data);
+      if (DEBUG) console.error("Erro na resposta:", data);
       if (response.status === 401) {
         alert("❌ Erro: Você não está autenticado. Faça login novamente.");
         window.location.href = "login.html";
@@ -551,7 +571,7 @@ async function limparTodosAgendamentos() {
       }
     }
   } catch (error) {
-    console.error("Erro ao limpar agendamentos:", error);
+    if (DEBUG) console.error("Erro ao limpar agendamentos:", error);
     alert(`❌ Erro ao conectar com o servidor: ${error.message}`);
   }
 }
@@ -569,7 +589,7 @@ async function carregarServicos() {
       servicosDisponiveis = await response.json();
     }
   } catch (error) {
-    console.error("Erro ao carregar serviços:", error);
+    if (DEBUG) console.error("Erro ao carregar serviços:", error);
   }
 }
 
@@ -641,7 +661,7 @@ async function editarAgendamento(id) {
     // Mostrar modal
     document.getElementById("editModal").classList.add("show");
   } catch (error) {
-    console.error("Erro ao carregar agendamento:", error);
+    if (DEBUG) console.error("Erro ao carregar agendamento:", error);
     alert("Erro ao carregar dados do agendamento.");
   }
 }
@@ -701,11 +721,12 @@ function configurarAutocompleteClientes() {
   const clienteIndicator = document.getElementById("cliente-indicator");
 
   if (!nomeInputCreate || !telefoneInputCreate || !suggestionsDiv) {
-    console.warn("⚠️ Elementos do autocomplete não encontrados:", {
-      nomeInput: !!nomeInputCreate,
-      telefoneInput: !!telefoneInputCreate,
-      suggestionsDiv: !!suggestionsDiv,
-    });
+    if (DEBUG)
+      console.warn("⚠️ Elementos do autocomplete não encontrados:", {
+        nomeInput: !!nomeInputCreate,
+        telefoneInput: !!telefoneInputCreate,
+        suggestionsDiv: !!suggestionsDiv,
+      });
     return;
   }
 
@@ -714,7 +735,7 @@ function configurarAutocompleteClientes() {
     autocompleteConfigurado &&
     nomeInputCreate.dataset.autocompleteConfigurado === "true"
   ) {
-    console.log("✅ Autocomplete já configurado, pulando...");
+    if (DEBUG) console.log("✅ Autocomplete já configurado, pulando...");
     return;
   }
 
@@ -727,13 +748,13 @@ function configurarAutocompleteClientes() {
 
   // Mostrar sugestões ao focar no campo (mesmo vazio)
   nomeInput.addEventListener("focus", function () {
-    console.log("🔍 Campo de nome focado, buscando clientes...");
+    if (DEBUG) console.log("🔍 Campo de nome focado, buscando clientes...");
     buscarClientes(this.value);
   });
 
   nomeInput.addEventListener("input", function () {
     const nomeDigitado = this.value.trim();
-    console.log("⌨️ Digitando no campo de nome:", nomeDigitado);
+    if (DEBUG) console.log("⌨️ Digitando no campo de nome:", nomeDigitado);
 
     // Resetar indicador
     if (clienteIndicator) {
@@ -748,11 +769,11 @@ function configurarAutocompleteClientes() {
 
     // Buscar imediatamente se vazio (para mostrar todos) ou após 300ms se digitando
     if (nomeDigitado.length === 0) {
-      console.log("📋 Campo vazio, buscando todos os clientes...");
+      if (DEBUG) console.log("📋 Campo vazio, buscando todos os clientes...");
       buscarClientes("");
     } else {
       timeoutBusca = setTimeout(async () => {
-        console.log("🔍 Buscando clientes com nome:", nomeDigitado);
+        if (DEBUG) console.log("🔍 Buscando clientes com nome:", nomeDigitado);
         await buscarClientes(nomeDigitado);
       }, 300);
     }
@@ -839,7 +860,8 @@ async function buscarHorariosDisponiveisCriar() {
     const result = await response.json();
     const horariosDisponiveis = result.horarios || [];
 
-    console.log("⏰ Horários disponíveis retornados:", horariosDisponiveis);
+    if (DEBUG)
+      console.log("⏰ Horários disponíveis retornados:", horariosDisponiveis);
 
     // Limpar loading
     loadingMsg.style.display = "none";
@@ -868,7 +890,7 @@ async function buscarHorariosDisponiveisCriar() {
       emptyMsg.style.display = "none";
     }
   } catch (error) {
-    console.error("Erro ao buscar horários disponíveis:", error);
+    if (DEBUG) console.error("Erro ao buscar horários disponíveis:", error);
     loadingMsg.style.display = "none";
     horarioSelect.innerHTML =
       '<option value="">Erro ao carregar horários</option>';
@@ -894,7 +916,7 @@ function fecharModalCriar() {
 
 // Buscar clientes para autocomplete
 async function buscarClientes(nome) {
-  console.log("🔍 buscarClientes chamado com nome:", nome);
+  if (DEBUG) console.log("🔍 buscarClientes chamado com nome:", nome);
   const token = localStorage.getItem("admin_token");
   const suggestionsDiv = document.getElementById("clientes-suggestions");
   const telefoneInput = document.getElementById("create-telefone");
@@ -902,11 +924,12 @@ async function buscarClientes(nome) {
   const clienteIndicator = document.getElementById("cliente-indicator");
 
   if (!suggestionsDiv || !telefoneInput || !nomeInput) {
-    console.error("❌ Elementos não encontrados:", {
-      suggestionsDiv: !!suggestionsDiv,
-      telefoneInput: !!telefoneInput,
-      nomeInput: !!nomeInput,
-    });
+    if (DEBUG)
+      console.error("❌ Elementos não encontrados:", {
+        suggestionsDiv: !!suggestionsDiv,
+        telefoneInput: !!telefoneInput,
+        nomeInput: !!nomeInput,
+      });
     return;
   }
 
@@ -928,7 +951,7 @@ async function buscarClientes(nome) {
 
     // Se não há texto, buscar últimos clientes cadastrados (passar string vazia)
     const url = `${API_URL}/admin/clientes?nome=${nome.length > 0 ? encodeURIComponent(nome) : ""}`;
-    console.log("📡 Buscando clientes na URL:", url);
+    if (DEBUG) console.log("📡 Buscando clientes na URL:", url);
 
     const response = await fetch(url, {
       method: "GET",
@@ -936,20 +959,26 @@ async function buscarClientes(nome) {
       headers: headers,
     });
 
-    console.log("📥 Resposta recebida:", response.status, response.statusText);
-
-    if (!response.ok) {
-      console.error(
-        "❌ Erro na resposta:",
+    if (DEBUG)
+      console.log(
+        "📥 Resposta recebida:",
         response.status,
         response.statusText,
       );
+
+    if (!response.ok) {
+      if (DEBUG)
+        console.error(
+          "❌ Erro na resposta:",
+          response.status,
+          response.statusText,
+        );
       suggestionsDiv.classList.remove("show");
       return;
     }
 
     const clientes = await response.json();
-    console.log("✅ Clientes recebidos:", clientes.length, clientes);
+    if (DEBUG) console.log("✅ Clientes recebidos:", clientes.length, clientes);
 
     // Sempre mostrar sugestões, mesmo se vazio (para permitir cadastrar novo)
     suggestionsDiv.innerHTML = "";
@@ -1013,7 +1042,7 @@ async function buscarClientes(nome) {
 
     suggestionsDiv.classList.add("show");
   } catch (error) {
-    console.error("Erro ao buscar clientes:", error);
+    if (DEBUG) console.error("Erro ao buscar clientes:", error);
     suggestionsDiv.classList.remove("show");
   }
 }
@@ -1094,7 +1123,7 @@ document.addEventListener("DOMContentLoaded", function () {
           );
         }
       } catch (error) {
-        console.error("Erro ao atualizar agendamento:", error);
+        if (DEBUG) console.error("Erro ao atualizar agendamento:", error);
         alert("❌ Erro ao conectar com o servidor.");
       }
     });
@@ -1207,10 +1236,10 @@ document.addEventListener("DOMContentLoaded", function () {
           }
 
           const jsonBody = JSON.stringify(formData);
-          console.log("📤 Criando agendamento:", formData);
-          console.log("📤 JSON sendo enviado:", jsonBody);
-          console.log("📤 API_URL:", API_URL);
-          console.log("📤 URL completa:", `${API_URL}/agendar`);
+          if (DEBUG) console.log("📤 Criando agendamento:", formData);
+          if (DEBUG) console.log("📤 JSON sendo enviado:", jsonBody);
+          if (DEBUG) console.log("📤 API_URL:", API_URL);
+          if (DEBUG) console.log("📤 URL completa:", `${API_URL}/agendar`);
 
           // Fazer requisição igual à página de agendamento
           const response = await fetch(`${API_URL}/agendar`, {
@@ -1222,7 +1251,7 @@ document.addEventListener("DOMContentLoaded", function () {
           });
 
           const result = await response.json();
-          console.log("📥 Resposta do servidor:", result);
+          if (DEBUG) console.log("📥 Resposta do servidor:", result);
 
           if (response.ok) {
             alert("✅ Agendamento criado com sucesso!");
@@ -1232,11 +1261,11 @@ document.addEventListener("DOMContentLoaded", function () {
             alert(`❌ Erro: ${result.error || "Erro ao criar agendamento"}`);
           }
         } catch (error) {
-          console.error("❌ Erro ao criar agendamento:", error);
-          console.error("   Tipo:", error.name);
-          console.error("   Mensagem:", error.message);
-          console.error("   Stack:", error.stack);
-          console.error("   API_URL atual:", API_URL);
+          if (DEBUG) console.error("❌ Erro ao criar agendamento:", error);
+          if (DEBUG) console.error("   Tipo:", error.name);
+          if (DEBUG) console.error("   Mensagem:", error.message);
+          if (DEBUG) console.error("   Stack:", error.stack);
+          if (DEBUG) console.error("   API_URL atual:", API_URL);
 
           let mensagemErro = "❌ Erro ao conectar com o servidor.";
           if (
@@ -1291,7 +1320,7 @@ async function deletarAgendamento(id) {
       alert(`❌ Erro: ${data.error || "Erro ao deletar agendamento"}`);
     }
   } catch (error) {
-    console.error("Erro ao deletar agendamento:", error);
+    if (DEBUG) console.error("Erro ao deletar agendamento:", error);
     alert("❌ Erro ao conectar com o servidor.");
   }
 }
