@@ -70,7 +70,7 @@ async function carregarServicos() {
 
     // Armazenar serviços no objeto servicos para uso no modal
     servicosList.forEach((servico) => {
-      servicos[servico.nome] = servico.valor;
+      servicos[servico.nome] = toMoneyNumber(servico.valor);
     });
 
     console.log("Serviços carregados com sucesso!");
@@ -91,6 +91,23 @@ function selecionarServico(nome, elemento) {
   }
 }
 
+function normalizarDisponibilidadeDia(horariosDia) {
+  if (!horariosDia) return {};
+  if (Array.isArray(horariosDia)) {
+    const periodos = { manhã: [], tarde: [], noite: [] };
+    horariosDia.forEach((h) => {
+      const hora = parseInt(String(h).split(":")[0], 10);
+      if (hora < 12) periodos.manhã.push(h);
+      else if (hora < 17) periodos.tarde.push(h);
+      else periodos.noite.push(h);
+    });
+    if (periodos.manhã.length === 0) delete periodos.manhã;
+    if (periodos.tarde.length === 0) delete periodos.tarde;
+    if (periodos.noite.length === 0) delete periodos.noite;
+    return periodos;
+  }
+  return horariosDia; // compat formato antigo
+}
 // Mostrar seleção de serviço em modal (quando clica no dia primeiro) - MÚLTIPLA SELEÇÃO
 function mostrarSelecaoServico(data) {
   // Garantir que não há serviços selecionados
@@ -104,11 +121,12 @@ function mostrarSelecaoServico(data) {
   let servicosHTML = "";
   Object.keys(servicos).forEach((nomeServico) => {
     const valor = toMoneyNumber(servicos[nomeServico]);
+    const valorFormatado = valor.toFixed(2).replace(".", ",");
     const isSelected = servicosSelecionados.includes(nomeServico);
     servicosHTML += `
             <button type="button" class="servico-card-select servico-btn-modal ${isSelected ? "selected" : ""}" data-servico="${nomeServico}">
                 <h4>${nomeServico}</h4>
-                <p class="price">R$ ${toMoneyNumber(valor).toFixed(2).replace(".", ",")}</p>
+                <p class="price">R$ ${toMoneyNumber(valorFormatado).toFixed(2).replace(".", ",")}</p>
                 ${isSelected ? '<span class="check-mark">✓</span>' : ""}
             </button>
         `;
@@ -225,7 +243,10 @@ function mostrarSelecaoServico(data) {
       // Usar dados já carregados do mês (não precisa fazer nova requisição)
       console.log("🔍 Verificando disponibilidade para data:", data);
       console.log("📊 Disponibilidade completa:", disponibilidade);
-      const horariosDisponiveis = disponibilidade[data] || {};
+      const horariosDisponiveis = normalizarDisponibilidadeDia(
+        disponibilidade[data],
+      );
+
       console.log(
         "⏰ Horários disponíveis para esta data:",
         horariosDisponiveis,
@@ -1103,14 +1124,15 @@ function renderizarServicosIniciais() {
   servicosGridEl.innerHTML = "";
 
   Object.keys(servicos).forEach((nomeServico) => {
-    const valor = Number(servicos[nomeServico] || 0);
+    const valor = toMoneyNumber(servicos[nomeServico] || 0);
+    const valorFormatado = valor.toFixed(2).replace(".", ",");
     const servicoCard = document.createElement("div");
     servicoCard.className = "servico-card-inicial";
     servicoCard.dataset.servico = nomeServico;
 
     servicoCard.innerHTML = `
             <h4>${nomeServico}</h4>
-            <p class="price">R$ ${toMoneyNumber(valor).toFixed(2).replace(".", ",")}</p>
+            <p class="price">R$ ${toMoneyNumber(valorFormatado).toFixed(2).replace(".", ",")}</p>
         `;
 
     servicoCard.addEventListener("click", () => {
