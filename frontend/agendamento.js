@@ -4,6 +4,7 @@ let API_PORT = 5001;
 //let API_URL = `http://localhost:${API_PORT}/api`;
 
 const API_URL = "https://backend-production-039a.up.railway.app/api";
+const toMoneyNumber = (v) => Number(v ?? 0);
 
 // Estado da aplicação
 let servicos = {};
@@ -102,7 +103,7 @@ function mostrarSelecaoServico(data) {
 
   let servicosHTML = "";
   Object.keys(servicos).forEach((nomeServico) => {
-    const valor = servicos[nomeServico];
+    const valor = toMoneyNumber(servicos[nomeServico]);
     const isSelected = servicosSelecionados.includes(nomeServico);
     servicosHTML += `
             <button type="button" class="servico-card-select servico-btn-modal ${isSelected ? "selected" : ""}" data-servico="${nomeServico}">
@@ -1102,7 +1103,7 @@ function renderizarServicosIniciais() {
   servicosGridEl.innerHTML = "";
 
   Object.keys(servicos).forEach((nomeServico) => {
-    const valor = servicos[nomeServico];
+    const valor = Number(servicos[nomeServico] || 0);
     const servicoCard = document.createElement("div");
     servicoCard.className = "servico-card-inicial";
     servicoCard.dataset.servico = nomeServico;
