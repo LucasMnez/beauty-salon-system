@@ -2,6 +2,7 @@
 // Tentar detectar porta automaticamente (tentar 5001 se 5000 não funcionar)
 let API_PORT = 5001;
 //let API_URL = `http://localhost:${API_PORT}/api`;
+const DEBUG = false;
 
 const API_URL = "https://backend-production-039a.up.railway.app/api";
 const toMoneyNumber = (v) => {
@@ -56,7 +57,7 @@ telefoneInput.addEventListener("input", function (e) {
 // Carregar serviços (apenas para uso no modal, não renderiza na página)
 async function carregarServicos() {
   try {
-    console.log("Carregando serviços de:", `${API_URL}/servicos`);
+    if (DEBUG) console.log("Carregando serviços de:", `${API_URL}/servicos`);
 
     const response = await fetch(`${API_URL}/servicos`);
 
@@ -65,10 +66,10 @@ async function carregarServicos() {
     }
 
     const servicosList = await response.json();
-    console.log("Serviços recebidos:", servicosList);
+    if (DEBUG) console.log("Serviços recebidos:", servicosList);
 
     if (!Array.isArray(servicosList) || servicosList.length === 0) {
-      console.warn("Nenhum serviço retornado pela API");
+      if (DEBUG) console.warn("Nenhum serviço retornado pela API");
       mostrarMensagem("Nenhum serviço disponível no momento.", "error");
       return;
     }
@@ -78,9 +79,9 @@ async function carregarServicos() {
       servicos[servico.nome] = toMoneyNumber(servico.valor);
     });
 
-    console.log("Serviços carregados com sucesso!");
+    if (DEBUG) console.log("Serviços carregados com sucesso!");
   } catch (error) {
-    console.error("Erro ao carregar serviços:", error);
+    if (DEBUG) console.error("Erro ao carregar serviços:", error);
     mostrarMensagem(
       "Erro ao carregar serviços. Verifique se o servidor está rodando.",
       "error",
@@ -234,11 +235,12 @@ function mostrarSelecaoServico(data) {
     .querySelector("#confirmarServicos")
     .addEventListener("click", async () => {
       if (servicosSelecionados.length === 0) {
-        console.warn("⚠️ Tentativa de confirmar sem serviços selecionados");
+        if (DEBUG)
+          console.warn("⚠️ Tentativa de confirmar sem serviços selecionados");
         return;
       }
 
-      console.log("✅ Serviços confirmados:", servicosSelecionados);
+      if (DEBUG) console.log("✅ Serviços confirmados:", servicosSelecionados);
 
       // Definir servicoSelecionado como primeiro para compatibilidade (usado em outras partes)
       servicoSelecionado = servicosSelecionados[0];
@@ -246,24 +248,26 @@ function mostrarSelecaoServico(data) {
       document.body.removeChild(modal);
 
       // Usar dados já carregados do mês (não precisa fazer nova requisição)
-      console.log("🔍 Verificando disponibilidade para data:", data);
-      console.log("📊 Disponibilidade completa:", disponibilidade);
+      if (DEBUG) console.log("🔍 Verificando disponibilidade para data:", data);
+      if (DEBUG) console.log("📊 Disponibilidade completa:", disponibilidade);
       const horariosDisponiveis = normalizarDisponibilidadeDia(
         disponibilidade[data],
       );
 
-      console.log(
-        "⏰ Horários disponíveis para esta data:",
-        horariosDisponiveis,
-      );
+      if (DEBUG)
+        console.log(
+          "⏰ Horários disponíveis para esta data:",
+          horariosDisponiveis,
+        );
       const periodosDisponiveis = Object.keys(horariosDisponiveis);
-      console.log("📋 Períodos disponíveis:", periodosDisponiveis);
+      if (DEBUG) console.log("📋 Períodos disponíveis:", periodosDisponiveis);
 
       if (periodosDisponiveis.length === 0) {
-        console.error(
-          "❌ Nenhum período disponível encontrado para a data:",
-          data,
-        );
+        if (DEBUG)
+          console.error(
+            "❌ Nenhum período disponível encontrado para a data:",
+            data,
+          );
         mostrarMensagem("Nenhum horário disponível para esta data", "error");
         dataSelecionada = null;
         servicosSelecionados = [];
@@ -277,7 +281,7 @@ function mostrarSelecaoServico(data) {
         return;
       }
 
-      console.log("✅ Chamando mostrarSelecaoHorario()...");
+      if (DEBUG) console.log("✅ Chamando mostrarSelecaoHorario()...");
       mostrarSelecaoHorario();
     });
 
@@ -304,7 +308,7 @@ async function carregarDisponibilidadeData(data) {
     const result = await response.json();
     disponibilidade[data] = result.horarios || {};
   } catch (error) {
-    console.error("Erro ao carregar disponibilidade:", error);
+    if (DEBUG) console.error("Erro ao carregar disponibilidade:", error);
     mostrarMensagem("Erro ao carregar horários disponíveis.", "error");
   }
 }
@@ -319,9 +323,10 @@ async function carregarDisponibilidadeMes() {
   const anoFormatado = String(anoAtual);
 
   try {
-    console.log(
-      `📅 Carregando disponibilidade do mês ${mesFormatado}/${anoFormatado}...`,
-    );
+    if (DEBUG)
+      console.log(
+        `📅 Carregando disponibilidade do mês ${mesFormatado}/${anoFormatado}...`,
+      );
     const inicio = performance.now();
 
     // Uma única requisição para todo o mês
@@ -337,13 +342,13 @@ async function carregarDisponibilidadeMes() {
     disponibilidade = result.disponibilidade || {};
 
     const tempo = ((performance.now() - inicio) / 1000).toFixed(2);
-    console.log(`✅ Disponibilidade carregada em ${tempo}s`);
-    console.log("📊 Dados de disponibilidade:", disponibilidade);
+    if (DEBUG) console.log(`✅ Disponibilidade carregada em ${tempo}s`);
+    if (DEBUG) console.log("📊 Dados de disponibilidade:", disponibilidade);
 
     // Re-renderizar calendário com os dados carregados
     renderizarCalendario();
   } catch (error) {
-    console.error("Erro ao carregar disponibilidade do mês:", error);
+    if (DEBUG) console.error("Erro ao carregar disponibilidade do mês:", error);
     mostrarMensagem(
       "Erro ao carregar disponibilidade. Tente novamente.",
       "error",
@@ -448,10 +453,11 @@ function renderizarCalendario() {
     // Criar indicadores de períodos disponíveis (apenas se há dados carregados)
     let indicadores = "";
     if (horariosDisponiveis && periodosDisponiveis.length > 0) {
-      console.log(
-        `📅 Data ${dataStr}: períodos disponíveis =`,
-        periodosDisponiveis,
-      );
+      if (DEBUG)
+        console.log(
+          `📅 Data ${dataStr}: períodos disponíveis =`,
+          periodosDisponiveis,
+        );
       indicadores = periodosDisponiveis
         .map((periodo) => {
           const letra = periodo.charAt(0).toUpperCase();
@@ -459,7 +465,7 @@ function renderizarCalendario() {
         })
         .join("");
     } else if (horariosDisponiveis !== undefined) {
-      console.log(`⚠️ Data ${dataStr}: sem períodos disponíveis`);
+      if (DEBUG) console.log(`⚠️ Data ${dataStr}: sem períodos disponíveis`);
     }
 
     dayCell.innerHTML = `
@@ -480,7 +486,7 @@ function renderizarCalendario() {
       dayCell.addEventListener("click", function (e) {
         e.stopPropagation();
         e.preventDefault();
-        console.log("Clique na data:", dataStr);
+        if (DEBUG) console.log("Clique na data:", dataStr);
         selecionarData(dataStr, dayCell);
       });
     } else {
@@ -494,11 +500,11 @@ function renderizarCalendario() {
 
 // Selecionar data
 async function selecionarData(data, elemento) {
-  console.log("selecionarData chamado:", data);
+  if (DEBUG) console.log("selecionarData chamado:", data);
 
   // Verificar se a célula está marcada como sem disponibilidade
   if (elemento.classList.contains("sem-disponibilidade")) {
-    console.log("Data marcada como sem disponibilidade");
+    if (DEBUG) console.log("Data marcada como sem disponibilidade");
     mostrarMensagem("Esta data não está disponível", "error");
     return;
   }
@@ -536,11 +542,12 @@ async function selecionarData(data, elemento) {
 
 // Mostrar seleção de horário
 async function mostrarSelecaoHorario() {
-  console.log("🔍 mostrarSelecaoHorario chamado para data:", dataSelecionada);
-  console.log("📊 Serviços selecionados:", servicosSelecionados);
+  if (DEBUG)
+    console.log("🔍 mostrarSelecaoHorario chamado para data:", dataSelecionada);
+  if (DEBUG) console.log("📊 Serviços selecionados:", servicosSelecionados);
 
   if (!dataSelecionada) {
-    console.error("❌ Nenhuma data selecionada!");
+    if (DEBUG) console.error("❌ Nenhuma data selecionada!");
     return;
   }
 
@@ -560,7 +567,8 @@ async function mostrarSelecaoHorario() {
     const result = await response.json();
     const horariosDisponiveis = result.horarios || [];
 
-    console.log("⏰ Horários disponíveis retornados:", horariosDisponiveis);
+    if (DEBUG)
+      console.log("⏰ Horários disponíveis retornados:", horariosDisponiveis);
 
     if (horariosDisponiveis.length === 0) {
       mostrarMensagem(
@@ -650,7 +658,7 @@ async function mostrarSelecaoHorario() {
       });
     });
   } catch (error) {
-    console.error("Erro ao carregar horários disponíveis:", error);
+    if (DEBUG) console.error("Erro ao carregar horários disponíveis:", error);
     mostrarMensagem(
       "Erro ao carregar horários disponíveis. Tente novamente.",
       "error",
@@ -711,9 +719,11 @@ form.addEventListener("submit", async function (e) {
   }
 
   // Debug: verificar serviços selecionados
-  console.log("DEBUG - Serviços selecionados:", servicosSelecionados);
-  console.log("DEBUG - Tipo:", typeof servicosSelecionados);
-  console.log("DEBUG - É array?", Array.isArray(servicosSelecionados));
+  if (DEBUG)
+    console.log("DEBUG - Serviços selecionados:", servicosSelecionados);
+  if (DEBUG) console.log("DEBUG - Tipo:", typeof servicosSelecionados);
+  if (DEBUG)
+    console.log("DEBUG - É array?", Array.isArray(servicosSelecionados));
 
   const formData = {
     nome: document.getElementById("nome").value.trim(),
@@ -724,8 +734,8 @@ form.addEventListener("submit", async function (e) {
   };
 
   // Debug: verificar formData antes de enviar
-  console.log("DEBUG - FormData completo:", formData);
-  console.log("DEBUG - FormData.servicos:", formData.servicos);
+  if (DEBUG) console.log("DEBUG - FormData completo:", formData);
+  if (DEBUG) console.log("DEBUG - FormData.servicos:", formData.servicos);
 
   if (!formData.nome || !formData.telefone || formData.telefone.length < 10) {
     mostrarMensagem(
@@ -742,7 +752,8 @@ form.addEventListener("submit", async function (e) {
 
   // Validação adicional: garantir que servicos é um array válido
   if (!Array.isArray(formData.servicos) || formData.servicos.length === 0) {
-    console.error("ERRO: servicos não é um array válido!", formData.servicos);
+    if (DEBUG)
+      console.error("ERRO: servicos não é um array válido!", formData.servicos);
     mostrarMensagem("Por favor, selecione pelo menos um serviço", "error");
     return;
   }
@@ -752,7 +763,7 @@ form.addEventListener("submit", async function (e) {
     submitBtn.textContent = "Agendando...";
 
     const jsonBody = JSON.stringify(formData);
-    console.log("DEBUG - JSON sendo enviado:", jsonBody);
+    if (DEBUG) console.log("DEBUG - JSON sendo enviado:", jsonBody);
 
     const response = await fetch(`${API_URL}/agendar`, {
       method: "POST",
@@ -764,7 +775,7 @@ form.addEventListener("submit", async function (e) {
 
     const result = await response.json();
 
-    console.log("Resposta do servidor:", result);
+    if (DEBUG) console.log("Resposta do servidor:", result);
 
     if (response.ok) {
       // Esconder formulário e calendário
@@ -833,7 +844,7 @@ form.addEventListener("submit", async function (e) {
       mostrarMensagem(result.error || "Erro ao realizar agendamento", "error");
     }
   } catch (error) {
-    console.error("Erro ao agendar:", error);
+    if (DEBUG) console.error("Erro ao agendar:", error);
     mostrarMensagem(
       "Erro ao conectar com o servidor. Verifique se o servidor está rodando.",
       "error",
@@ -901,7 +912,7 @@ function notificarRaissaWhatsApp(dadosAgendamento, valorTotal) {
   // Abrir WhatsApp Web em nova aba
   window.open(whatsappUrl, "_blank");
 
-  console.log("Notificação WhatsApp enviada para Raissa");
+  if (DEBUG) console.log("Notificação WhatsApp enviada para Raissa");
 }
 
 // Mostrar link de agendamento
@@ -1018,10 +1029,11 @@ async function carregarProximosHorarios() {
   const verMaisBtn = document.getElementById("verMaisHorariosBtn");
 
   try {
-    console.log("📅 Carregando horários para:", {
-      hoje: hojeStr,
-      amanha: amanhaStr,
-    });
+    if (DEBUG)
+      console.log("📅 Carregando horários para:", {
+        hoje: hojeStr,
+        amanha: amanhaStr,
+      });
 
     // Carregar disponibilidade para hoje e amanhã (sem serviços selecionados, retorna lista simples)
     const [hojeResponse, amanhaResponse] = await Promise.all([
@@ -1036,7 +1048,11 @@ async function carregarProximosHorarios() {
     const hojeData = await hojeResponse.json();
     const amanhaData = await amanhaResponse.json();
 
-    console.log("📊 Dados recebidos:", { hoje: hojeData, amanha: amanhaData });
+    if (DEBUG)
+      console.log("📊 Dados recebidos:", {
+        hoje: hojeData,
+        amanha: amanhaData,
+      });
 
     // O endpoint retorna {horarios: [...]} - sempre array agora
     let todosHorariosHoje = [];
@@ -1065,12 +1081,13 @@ async function carregarProximosHorarios() {
       });
     }
 
-    console.log("⏰ Horários extraídos:", {
-      hoje: todosHorariosHoje.length,
-      amanha: todosHorariosAmanha.length,
-      hojeLista: todosHorariosHoje.slice(0, 5),
-      amanhaLista: todosHorariosAmanha.slice(0, 5),
-    });
+    if (DEBUG)
+      console.log("⏰ Horários extraídos:", {
+        hoje: todosHorariosHoje.length,
+        amanha: todosHorariosAmanha.length,
+        hojeLista: todosHorariosHoje.slice(0, 5),
+        amanhaLista: todosHorariosAmanha.slice(0, 5),
+      });
 
     // Ordenar horários
     todosHorariosHoje.sort();
@@ -1114,8 +1131,8 @@ async function carregarProximosHorarios() {
       verMaisBtn.style.display = "none";
     }
   } catch (error) {
-    console.error("❌ Erro ao carregar próximos horários:", error);
-    console.error("   Stack:", error.stack);
+    if (DEBUG) console.error("❌ Erro ao carregar próximos horários:", error);
+    if (DEBUG) console.error("   Stack:", error.stack);
     horariosHojeAmanhaEl.innerHTML =
       '<div class="horario-dia">Erro ao carregar horários. Tente novamente.</div>';
   }
@@ -1214,9 +1231,10 @@ async function carregarDisponibilidade14Dias() {
         disponibilidadeFiltrada[dataStr] = disponibilidade[dataStr];
       } else {
         // Se não tem dados do mês, buscar individualmente (fallback)
-        console.log(
-          `⚠️ Data ${dataStr} não encontrada no mês, buscando individualmente...`,
-        );
+        if (DEBUG)
+          console.log(
+            `⚠️ Data ${dataStr} não encontrada no mês, buscando individualmente...`,
+          );
         promisesHorarios.push(
           fetch(`${API_URL}/horarios-disponiveis?data=${dataStr}`)
             .then((r) => r.json())
@@ -1277,7 +1295,7 @@ async function carregarDisponibilidade14Dias() {
               }
             })
             .catch((err) => {
-              console.error(`Erro ao buscar ${dataStr}:`, err);
+              if (DEBUG) console.error(`Erro ao buscar ${dataStr}:`, err);
               disponibilidadeFiltrada[dataStr] = {};
             }),
         );
@@ -1290,10 +1308,11 @@ async function carregarDisponibilidade14Dias() {
     }
 
     disponibilidade = disponibilidadeFiltrada;
-    console.log(
-      "📊 Disponibilidade final após filtro:",
-      Object.keys(disponibilidade),
-    );
+    if (DEBUG)
+      console.log(
+        "📊 Disponibilidade final após filtro:",
+        Object.keys(disponibilidade),
+      );
 
     // Renderizar calendário apenas com próximos 14 dias
     renderizarCalendario14Dias();
@@ -1301,7 +1320,7 @@ async function carregarDisponibilidade14Dias() {
     // Atualizar indicadores de lotação
     atualizarIndicadoresLotacao();
   } catch (error) {
-    console.error("Erro ao carregar disponibilidade:", error);
+    if (DEBUG) console.error("Erro ao carregar disponibilidade:", error);
     mostrarMensagem(
       "Erro ao carregar disponibilidade. Tente novamente.",
       "error",
@@ -1325,8 +1344,13 @@ function renderizarCalendario14Dias() {
     calendarGrid.appendChild(header);
   });
 
-  console.log("📅 Renderizando calendário 14 dias");
-  console.log("   Disponibilidade carregada:", Object.keys(disponibilidade));
+  if (DEBUG) if (DEBUG) console.log("📅 Renderizando calendário 14 dias");
+  if (DEBUG)
+    if (DEBUG)
+      console.log(
+        "   Disponibilidade carregada:",
+        Object.keys(disponibilidade),
+      );
 
   // Renderizar próximos 14 dias
   for (let i = 0; i < 14; i++) {
@@ -1337,12 +1361,14 @@ function renderizarCalendario14Dias() {
     const isDomingo = diaSemana === 0;
 
     const horariosDisponiveis = disponibilidade[dataStr];
-    console.log(`   Dia ${i + 1} (${dataStr}):`, {
-      diaSemana: diaSemana,
-      isDomingo: isDomingo,
-      temDisponibilidade: !!horariosDisponiveis,
-      disponibilidade: horariosDisponiveis,
-    });
+    if (DEBUG)
+      if (DEBUG)
+        console.log(`   Dia ${i + 1} (${dataStr}):`, {
+          diaSemana: diaSemana,
+          isDomingo: isDomingo,
+          temDisponibilidade: !!horariosDisponiveis,
+          disponibilidade: horariosDisponiveis,
+        });
 
     let totalHorarios = 0;
 
@@ -1353,6 +1379,19 @@ function renderizarCalendario14Dias() {
         (sum, arr) => sum + (Array.isArray(arr) ? arr.length : 0),
         0,
       );
+    }
+
+    const dayCell = document.createElement("div");
+    dayCell.className = "calendar-day";
+
+    if (isDomingo) {
+      dayCell.classList.add("domingo");
+    } else if (totalHorarios === 0) {
+      dayCell.classList.add("sem-disponibilidade");
+    } else {
+      dayCell.classList.add("clickable");
+      if (totalHorarios <= 3) dayCell.classList.add("poucos-horarios");
+      else if (totalHorarios >= 8) dayCell.classList.add("muitos-horarios");
     }
 
     if (dataStr === dataSelecionada) {
@@ -1424,7 +1463,7 @@ function atualizarIndicadoresLotacao() {
 
 // Inicializar quando o DOM estiver pronto
 async function inicializar() {
-  console.log("Inicializando aplicação...");
+  if (DEBUG) console.log("Inicializando aplicação...");
 
   // Carregar serviços
   await carregarServicos();
@@ -1440,6 +1479,7 @@ async function inicializar() {
     .getElementById("verMaisHorariosBtn")
     .addEventListener("click", () => {
       document.getElementById("proximosHorarios").style.display = "none";
+      document.querySelector(".horarios-ajuda-grid").style.display = "none";
       document.getElementById("selecaoServicoInicial").style.display = "block";
     });
 }
@@ -1449,6 +1489,6 @@ if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", inicializar);
 } else {
   // DOM já está pronto
-  console.log("DOM já estava pronto");
+  if (DEBUG) console.log("DOM já estava pronto");
   inicializar();
 }
