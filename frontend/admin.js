@@ -609,8 +609,8 @@ async function editarAgendamento(id) {
     document.getElementById("edit-telefone").value = agendamento.telefone;
     document.getElementById("edit-data").value = agendamento.data;
     document.getElementById("edit-horario").value = agendamento.horario;
-    document.getElementById("edit-valor").value = Number(
-      agendamento.valor || 0,
+    document.getElementById("edit-valor").value = toNumber(
+      agendamento.valor,
     ).toFixed(2);
     document.getElementById("edit-status").value = agendamento.status;
     document.getElementById("edit-forma-pagamento").value =
@@ -627,7 +627,7 @@ async function editarAgendamento(id) {
     servicosDisponiveis.forEach((servico) => {
       const option = document.createElement("option");
       option.value = servico.nome;
-      const valorServico = Number(servico.valor || 0);
+      const valorServico = toNumber(servico.valor);
       option.textContent = `${servico.nome} - R$ ${valorServico.toFixed(2).replace(".", ",")}`; // Marcar como selecionado se estiver na lista de serviços do agendamento
       const servicosAgendamento = agendamento.servico
         .split(", ")
