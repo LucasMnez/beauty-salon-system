@@ -91,7 +91,9 @@ function renderizarServicos() {
       return `
             <tr>
                 <td>${servico.nome}</td>
-                <td>R$ ${toNumber(servico.valor).toFixed(2).replace(".", ",")}</td>
+                <td>R$ ${Number(servico.valor || 0)
+                  .toFixed(2)
+                  .replace(".", ",")}</td>
                 <td>${duracaoFormatada}</td>
                 <td>
                     <span class="status-badge ${servico.ativo ? "status-ativo" : "status-inativo"}">
@@ -122,7 +124,9 @@ function abrirModalServico(servicoId = null) {
       title.textContent = "Editar Serviço";
       document.getElementById("servico-id").value = servico.id;
       document.getElementById("servico-nome").value = servico.nome;
-      document.getElementById("servico-valor").value = servico.valor;
+      document.getElementById("servico-valor").value = Number(
+        servico.valor || 0,
+      );
       document.getElementById("servico-duracao").value =
         servico.duracao_minutos;
       document.getElementById("servico-ativo").checked = servico.ativo;

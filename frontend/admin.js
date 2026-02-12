@@ -3,6 +3,7 @@
 // Isso evita problemas de CORS e funciona independente da porta
 const API_URL = "https://backend-production-039a.up.railway.app/api";
 const toNumber = (v) => Number(v ?? 0);
+const toMoneyNumber = (v) => Number(v ?? 0);
 
 let agendamentos = [];
 let filtros = {
@@ -181,7 +182,8 @@ function renderizarAgendamentos() {
     .map((ag) => {
       const dataObj = new Date(ag.data + "T00:00:00");
       const dataFormatada = dataObj.toLocaleDateString("pt-BR");
-      const valorFormatado = `R$ ${toNumber(ag.valor).toFixed(2).replace(".", ",")}`;
+      const valorNumerico = Number(ag.valor || 0);
+      const valorFormatado = `R$ ${valorNumerico.toFixed(2).replace(".", ",")}`;
 
       // Determinar ações disponíveis
       const acoes = [];
@@ -607,8 +609,8 @@ async function editarAgendamento(id) {
     document.getElementById("edit-telefone").value = agendamento.telefone;
     document.getElementById("edit-data").value = agendamento.data;
     document.getElementById("edit-horario").value = agendamento.horario;
-    document.getElementById("edit-valor").value = toNumber(
-      agendamento.valor,
+    document.getElementById("edit-valor").value = Number(
+      agendamento.valor || 0,
     ).toFixed(2);
     document.getElementById("edit-status").value = agendamento.status;
     document.getElementById("edit-forma-pagamento").value =
@@ -625,8 +627,8 @@ async function editarAgendamento(id) {
     servicosDisponiveis.forEach((servico) => {
       const option = document.createElement("option");
       option.value = servico.nome;
-      option.textContent = `${servico.nome} - R$ ${servico.toNumber(servico.valor).toFixed(2)}`;
-      // Marcar como selecionado se estiver na lista de serviços do agendamento
+      const valorServico = Number(servico.valor || 0);
+      option.textContent = `${servico.nome} - R$ ${valorServico.toFixed(2).replace(".", ",")}`; // Marcar como selecionado se estiver na lista de serviços do agendamento
       const servicosAgendamento = agendamento.servico
         .split(", ")
         .map((s) => s.trim());

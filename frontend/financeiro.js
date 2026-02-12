@@ -56,14 +56,6 @@ async function carregarDadosFinanceiros() {
   const dataInicio = document.getElementById("filter-data-inicio").value;
   const dataFim = document.getElementById("filter-data-fim").value;
 
-  const resumo = dadosFinanceiros.resumo || {};
-  const totalPorForma = resumo.total_por_forma_pagamento || {};
-  const totalPorStatus = resumo.total_por_status || {};
-  const totalPorCliente = resumo.total_por_cliente || [];
-  const totalPorMes = resumo.total_por_mes || [];
-  const totalPago = resumo.total_pago || 0;
-  const totalNaoPago = resumo.total_nao_pago || 0;
-
   // Construir query string
   const params = new URLSearchParams();
   if (cliente) params.append("cliente", cliente);
@@ -152,7 +144,13 @@ function atualizarResumo() {
 function atualizarTabelasResumo() {
   if (!dadosFinanceiros || !dadosFinanceiros.resumo) return;
 
-  const resumo = dadosFinanceiros.resumo;
+  const resumo = dadosFinanceiros.resumo || {};
+  const totalPorForma = resumo.total_por_forma_pagamento || {};
+  const totalPorStatus = resumo.total_por_status || {};
+  const totalPorCliente = resumo.total_por_cliente || [];
+  const totalPorMes = resumo.total_por_mes || [];
+  const totalPago = Number(resumo.total_pago || 0);
+  const totalNaoPago = Number(resumo.total_nao_pago || 0);
 
   // Tabela por forma de pagamento
   const tbodyForma = document.getElementById("tabela-forma-pagamento");
@@ -259,7 +257,7 @@ function atualizarTabelasResumo() {
 
   const statusPagamentoData = [
     { label: "Pago", valor: totalPago || 0 },
-    { label: "Não Pago", valor: totalPago || 0 },
+    { label: "Não Pago", valor: totalNaoPago || 0 },
   ];
 
   if (statusPagamentoData.every((item) => item.valor === 0)) {
