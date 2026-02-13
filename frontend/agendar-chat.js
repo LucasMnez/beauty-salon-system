@@ -34,7 +34,7 @@ function renderServicoCarousel(servicos, onSelect) {
 
     const sub = document.createElement("div");
     sub.className = "chat-card-sub";
-    sub.innerHTML = `<span>R$ ${formatBRL(s.valor)}</span><span>${s.duracao_min ? s.duracao_min + "min" : ""}</span>`;
+    sub.innerHTML = `<span>R$ ${formatBRL(s.valor)}</span><span>${s.duracao_minutos ? s.duracao_minutos + "min" : ""}</span>`;
 
     card.appendChild(check);
     card.appendChild(title);
@@ -213,7 +213,7 @@ elForm.addEventListener("submit", async (e) => {
       clearActions();
 
       userSay(servico.nome);
-      await botSayDelayed(`Boa! Você escolheu: ${servico.nome}.`, 800);
+      //await botSayDelayed(`Boa! Você escolheu: ${servico.nome}.`, 800);
 
       // próximo passo: dia/horário (a gente implementa em seguida)
       await botSayDelayed(
@@ -224,8 +224,8 @@ elForm.addEventListener("submit", async (e) => {
 
     // enquanto está em "servico", você pode desabilitar o input pra evitar digitar:
     elInput.value = "";
-    elInput.disabled = false;
-    document.getElementById("chatSend").disabled = false;
+    elInput.disabled = true;
+    document.getElementById("chatSend").disabled = true;
 
     return;
   }
