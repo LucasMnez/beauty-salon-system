@@ -1,749 +1,909 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin - Raissa Nails Beauty</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/frontend/styles.css" />
     <style>
-        body {
-            background: #F8F9FA;
-        }
-        .admin-container {
-            max-width: 1600px;
-            margin: 0 auto;
-            padding: 24px;
-        }
-        .admin-header {
-            background: linear-gradient(135deg, #D4A574 0%, #C8965F 100%);
-            color: white;
-            padding: 25px 30px;
-            border-radius: 12px;
-            margin-bottom: 25px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .admin-header h1 {
-            margin: 0;
-            font-size: 2em;
-            font-weight: 600;
-        }
-        .admin-header p {
-            margin: 5px 0 0 0;
-            opacity: 0.9;
-            font-size: 0.95em;
-        }
-        .logout-btn {
-            background: rgba(255,255,255,0.2);
-            color: white;
-            border: 1px solid rgba(255,255,255,0.3);
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-            transition: all 0.3s;
-        }
-        .logout-btn:hover {
-            background: rgba(255,255,255,0.3);
-            transform: translateY(-1px);
-        }
-        .filters {
-            background: white;
-            padding: 20px 24px;
-            border-radius: 12px;
-            margin-bottom: 24px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            align-items: center;
-            border: 1px solid #E9ECEF;
-        }
-        .filters input, .filters select {
-            padding: 10px 14px;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 14px;
-            transition: all 0.2s;
-        }
-        .filters input:focus, .filters select:focus {
-            outline: none;
-            border-color: #D4A574;
-            box-shadow: 0 0 0 3px rgba(212,165,116,0.1);
-        }
-        .filters input[type="date"] {
-            width: 170px;
-        }
-        .filters select {
-            width: 160px;
-        }
-        .filters input[type="text"] {
-            flex: 1;
-            min-width: 180px;
-        }
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-        .stat-card {
-            background: white;
-            padding: 20px 24px;
-            border-radius: 12px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-            text-align: center;
-            transition: transform 0.2s, box-shadow 0.2s;
-            border: 1px solid #E9ECEF;
-        }
-        .stat-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-        .stat-card h3 {
-            margin: 0 0 12px 0;
-            color: #888;
-            font-size: 13px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-weight: 500;
-        }
-        .stat-card .value {
-            font-size: 2.2em;
-            font-weight: 700;
-            color: #D4A574;
-        }
-        .agendamentos-table {
-            background: white;
-            border-radius: 12px;
-            overflow: visible;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-            border: 1px solid #E9ECEF;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            position: relative;
-        }
-        thead {
-            background: linear-gradient(135deg, #D4A574 0%, #C8965F 100%);
-            color: white;
-        }
-        th, td {
-            padding: 14px 16px;
-            text-align: left;
-            border-bottom: 1px solid #F1F3F5;
-        }
-        th {
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 11px;
-            letter-spacing: 0.5px;
-        }
-        tbody tr {
-            transition: background 0.2s;
-        }
-        tbody tr:hover {
-            background: #F8F9FA;
-        }
-        tbody td {
-            color: #495057;
-            font-size: 14px;
-        }
-        tbody tr:last-child td {
-            border-bottom: none;
-        }
-        tbody td {
-            position: relative;
-        }
-        tbody td:last-child {
-            overflow: visible;
-        }
-        .status-badge {
-            display: inline-block;
-            padding: 6px 12px;
-            border-radius: 16px;
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-            white-space: nowrap;
-        }
-        .status-pendente {
-            background: #FFF3CD;
-            color: #856404;
-        }
-        .status-confirmado {
-            background: #D1ECF1;
-            color: #0C5460;
-        }
-        .status-cancelado {
-            background: #F8D7DA;
-            color: #721C24;
-        }
-        .status-concluido {
-            background: #D4EDDA;
-            color: #155724;
-        }
-        /* Badges de forma de pagamento */
-        .pagamento-badge {
-            display: inline-block;
-            padding: 6px 12px;
-            border-radius: 16px;
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-            white-space: nowrap;
-        }
-        .pagamento-pendente {
-            background: #E9ECEF;
-            color: #495057;
-        }
-        .pagamento-pix {
-            background: #E7F5FF;
-            color: #0066CC;
-        }
-        .pagamento-cartao {
-            background: #F0F9FF;
-            color: #0369A1;
-        }
-        /* Menu de ações com 3 pontinhos */
-        .actions-menu {
-            position: relative;
-            display: inline-block;
-            z-index: 10001;
-        }
-        .menu-toggle {
-            background: transparent;
-            border: 1px solid #e0e0e0;
-            border-radius: 6px;
-            padding: 6px 10px;
-            cursor: pointer;
-            font-size: 18px;
-            color: #666;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 32px;
-            height: 32px;
-        }
-        .menu-toggle:hover {
-            background: #f5f5f5;
-            border-color: #D4A574;
-            color: #D4A574;
-        }
-        .menu-dropdown {
-            position: absolute;
-            right: 0;
-            top: 100%;
-            margin-top: 5px;
-            background: white;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            min-width: 150px;
-            z-index: 10000;
-            display: none;
-            overflow: visible;
-        }
-        .menu-dropdown.show {
-            display: block;
-        }
-        .menu-item {
-            padding: 12px 16px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: background 0.2s;
-            border: none;
-            background: none;
-            width: 100%;
-            text-align: left;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .menu-item:hover {
-            background: #f5f5f5;
-        }
-        .menu-item.confirmar {
-            color: #28a745;
-        }
-        .menu-item.cancelar {
-            color: #dc3545;
-        }
-        .menu-item.concluir {
-            color: #17a2b8;
-        }
-        .menu-item.editar {
-            color: #007bff;
-        }
-        .menu-item.deletar {
-            color: #dc3545;
-        }
-        /* Modal de edição */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-        }
-        .modal-overlay.show {
-            display: flex;
-        }
-        .modal-content {
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            max-width: 600px;
-            width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-        .modal-header h2 {
-            margin: 0;
-            color: #333;
-        }
-        .modal-close {
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            color: #999;
-            padding: 0;
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            transition: all 0.2s;
-        }
-        .modal-close:hover {
-            background: #f5f5f5;
-            color: #333;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #333;
-            font-size: 14px;
-        }
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 14px;
-            transition: all 0.2s;
-            box-sizing: border-box;
-        }
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #D4A574;
-            box-shadow: 0 0 0 3px rgba(212,165,116,0.1);
-        }
-        #clientes-suggestions {
-            display: none;
-        }
-        #clientes-suggestions.show {
-            display: block;
-        }
-        .suggestion-item {
-            padding: 10px 14px;
-            cursor: pointer;
-            border-bottom: 1px solid #f0f0f0;
-            transition: background 0.2s;
-        }
-        .suggestion-item:hover {
-            background: #f5f5f5;
-        }
-        .suggestion-item:last-child {
-            border-bottom: none;
-        }
-        .suggestion-item.highlighted {
-            background: #f0f0f0;
-        }
-        .suggestion-nome {
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 4px;
-        }
-        .suggestion-telefone {
-            font-size: 12px;
-            color: #666;
-        }
-        .form-group textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
-        .form-actions {
-            display: flex;
-            gap: 12px;
-            justify-content: flex-end;
-            margin-top: 25px;
-        }
-        .form-actions button {
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: none;
-        }
-        .btn-cancel {
-            background: #6c757d;
-            color: white;
-        }
-        .btn-cancel:hover {
-            background: #5a6268;
-        }
-        .btn-save {
-            background: #D4A574;
-            color: white;
-        }
-        .btn-save:hover {
-            background: #C8965F;
-        }
-        .menu-item:first-child {
-            border-top-left-radius: 8px;
-            border-top-right-radius: 8px;
-        }
-        .menu-item:last-child {
-            border-bottom-left-radius: 8px;
-            border-bottom-right-radius: 8px;
-        }
-        .loading {
-            text-align: center;
-            padding: 60px;
-            color: #888;
-            font-size: 15px;
-        }
-        .empty-state {
-            text-align: center;
-            padding: 80px 20px;
-            color: #999;
-        }
-        .empty-state div:first-child {
-            font-size: 48px;
-            margin-bottom: 15px;
-            opacity: 0.5;
-        }
-        .empty-state div:last-child {
-            font-size: 15px;
-        }
-        /* Melhorias gerais */
-        body {
-            background: #f8f9fa;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-        }
-        .cta-button {
-            padding: 10px 18px;
-            border-radius: 8px;
-            font-weight: 500;
-            font-size: 14px;
-            transition: all 0.2s;
-            border: none;
-            cursor: pointer;
-            color: white;
-        }
-        .cta-button:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-        }
-        .cta-button:active {
-            transform: translateY(0);
-        }
+      body {
+        background: #f8f9fa;
+      }
+      .admin-container {
+        max-width: 1600px;
+        margin: 0 auto;
+        padding: 24px;
+      }
+      .admin-header {
+        background: linear-gradient(135deg, #d4a574 0%, #c8965f 100%);
+        color: white;
+        padding: 25px 30px;
+        border-radius: 12px;
+        margin-bottom: 25px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .admin-header h1 {
+        margin: 0;
+        font-size: 2em;
+        font-weight: 600;
+      }
+      .admin-header p {
+        margin: 5px 0 0 0;
+        opacity: 0.9;
+        font-size: 0.95em;
+      }
+      .logout-btn {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        padding: 10px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.3s;
+      }
+      .logout-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-1px);
+      }
+      .filters {
+        background: white;
+        padding: 20px 24px;
+        border-radius: 12px;
+        margin-bottom: 24px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        align-items: center;
+        border: 1px solid #e9ecef;
+      }
+      .filters input,
+      .filters select {
+        padding: 10px 14px;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: all 0.2s;
+      }
+      .filters input:focus,
+      .filters select:focus {
+        outline: none;
+        border-color: #d4a574;
+        box-shadow: 0 0 0 3px rgba(212, 165, 116, 0.1);
+      }
+      .filters input[type="date"] {
+        width: 170px;
+      }
+      .filters select {
+        width: 160px;
+      }
+      .filters input[type="text"] {
+        flex: 1;
+        min-width: 180px;
+      }
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+      .stat-card {
+        background: white;
+        padding: 20px 24px;
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+        text-align: center;
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+        border: 1px solid #e9ecef;
+      }
+      .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+      .stat-card h3 {
+        margin: 0 0 12px 0;
+        color: #888;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 500;
+      }
+      .stat-card .value {
+        font-size: 2.2em;
+        font-weight: 700;
+        color: #d4a574;
+      }
+      .agendamentos-table {
+        background: white;
+        border-radius: 12px;
+        overflow: visible;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+        border: 1px solid #e9ecef;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        position: relative;
+      }
+      thead {
+        background: linear-gradient(135deg, #d4a574 0%, #c8965f 100%);
+        color: white;
+      }
+      th,
+      td {
+        padding: 14px 16px;
+        text-align: left;
+        border-bottom: 1px solid #f1f3f5;
+      }
+      th {
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 11px;
+        letter-spacing: 0.5px;
+      }
+      tbody tr {
+        transition: background 0.2s;
+      }
+      tbody tr:hover {
+        background: #f8f9fa;
+      }
+      tbody td {
+        color: #495057;
+        font-size: 14px;
+      }
+      tbody tr:last-child td {
+        border-bottom: none;
+      }
+      tbody td {
+        position: relative;
+      }
+      tbody td:last-child {
+        overflow: visible;
+      }
+      .status-badge {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 16px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        white-space: nowrap;
+      }
+      .status-pendente {
+        background: #fff3cd;
+        color: #856404;
+      }
+      .status-confirmado {
+        background: #d1ecf1;
+        color: #0c5460;
+      }
+      .status-cancelado {
+        background: #f8d7da;
+        color: #721c24;
+      }
+      .status-concluido {
+        background: #d4edda;
+        color: #155724;
+      }
+      /* Badges de forma de pagamento */
+      .pagamento-badge {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 16px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        white-space: nowrap;
+      }
+      .pagamento-pendente {
+        background: #e9ecef;
+        color: #495057;
+      }
+      .pagamento-pix {
+        background: #e7f5ff;
+        color: #0066cc;
+      }
+      .pagamento-cartao {
+        background: #f0f9ff;
+        color: #0369a1;
+      }
+      /* Menu de ações com 3 pontinhos */
+      .actions-menu {
+        position: relative;
+        display: inline-block;
+        z-index: 10001;
+      }
+      .menu-toggle {
+        background: transparent;
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        padding: 6px 10px;
+        cursor: pointer;
+        font-size: 18px;
+        color: #666;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+      }
+      .menu-toggle:hover {
+        background: #f5f5f5;
+        border-color: #d4a574;
+        color: #d4a574;
+      }
+      .menu-dropdown {
+        position: absolute;
+        right: 0;
+        top: 100%;
+        margin-top: 5px;
+        background: white;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        min-width: 150px;
+        z-index: 10000;
+        display: none;
+        overflow: visible;
+      }
+      .menu-dropdown.show {
+        display: block;
+      }
+      .menu-item {
+        padding: 12px 16px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background 0.2s;
+        border: none;
+        background: none;
+        width: 100%;
+        text-align: left;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .menu-item:hover {
+        background: #f5f5f5;
+      }
+      .menu-item.confirmar {
+        color: #28a745;
+      }
+      .menu-item.cancelar {
+        color: #dc3545;
+      }
+      .menu-item.concluir {
+        color: #17a2b8;
+      }
+      .menu-item.editar {
+        color: #007bff;
+      }
+      .menu-item.deletar {
+        color: #dc3545;
+      }
+      /* Modal de edição */
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 2000;
+      }
+      .modal-overlay.show {
+        display: flex;
+      }
+      .modal-content {
+        background: white;
+        border-radius: 12px;
+        padding: 30px;
+        max-width: 600px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      }
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+      }
+      .modal-header h2 {
+        margin: 0;
+        color: #333;
+      }
+      .modal-close {
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        color: #999;
+        padding: 0;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: all 0.2s;
+      }
+      .modal-close:hover {
+        background: #f5f5f5;
+        color: #333;
+      }
+      .form-group {
+        margin-bottom: 20px;
+      }
+      .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #333;
+        font-size: 14px;
+      }
+      .form-group input,
+      .form-group select,
+      .form-group textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: all 0.2s;
+        box-sizing: border-box;
+      }
+      .form-group input:focus,
+      .form-group select:focus,
+      .form-group textarea:focus {
+        outline: none;
+        border-color: #d4a574;
+        box-shadow: 0 0 0 3px rgba(212, 165, 116, 0.1);
+      }
+      #clientes-suggestions {
+        display: none;
+      }
+      #clientes-suggestions.show {
+        display: block;
+      }
+      .suggestion-item {
+        padding: 10px 14px;
+        cursor: pointer;
+        border-bottom: 1px solid #f0f0f0;
+        transition: background 0.2s;
+      }
+      .suggestion-item:hover {
+        background: #f5f5f5;
+      }
+      .suggestion-item:last-child {
+        border-bottom: none;
+      }
+      .suggestion-item.highlighted {
+        background: #f0f0f0;
+      }
+      .suggestion-nome {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 4px;
+      }
+      .suggestion-telefone {
+        font-size: 12px;
+        color: #666;
+      }
+      .form-group textarea {
+        resize: vertical;
+        min-height: 80px;
+      }
+      .form-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
+        margin-top: 25px;
+      }
+      .form-actions button {
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: none;
+      }
+      .btn-cancel {
+        background: #6c757d;
+        color: white;
+      }
+      .btn-cancel:hover {
+        background: #5a6268;
+      }
+      .btn-save {
+        background: #d4a574;
+        color: white;
+      }
+      .btn-save:hover {
+        background: #c8965f;
+      }
+      .menu-item:first-child {
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+      }
+      .menu-item:last-child {
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+      }
+      .loading {
+        text-align: center;
+        padding: 60px;
+        color: #888;
+        font-size: 15px;
+      }
+      .empty-state {
+        text-align: center;
+        padding: 80px 20px;
+        color: #999;
+      }
+      .empty-state div:first-child {
+        font-size: 48px;
+        margin-bottom: 15px;
+        opacity: 0.5;
+      }
+      .empty-state div:last-child {
+        font-size: 15px;
+      }
+      /* Melhorias gerais */
+      body {
+        background: #f8f9fa;
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
+          Cantarell, sans-serif;
+      }
+      .cta-button {
+        padding: 10px 18px;
+        border-radius: 8px;
+        font-weight: 500;
+        font-size: 14px;
+        transition: all 0.2s;
+        border: none;
+        cursor: pointer;
+        color: white;
+      }
+      .cta-button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      }
+      .cta-button:active {
+        transform: translateY(0);
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="admin-container">
-        <div class="admin-header">
-            <div>
-                <h1>📋 Painel Administrativo</h1>
-                <p>Gerencie todos os agendamentos</p>
-            </div>
-            <div style="display: flex; gap: 10px; align-items: center;">
-                <a href="financeiro.html" class="logout-btn" style="text-decoration: none; background: rgba(255,255,255,0.25);">💰 Financeiro</a>
-                <a href="config.html" class="logout-btn" style="text-decoration: none;">⚙️ Configurações</a>
-                <button class="logout-btn" onclick="fazerLogout()">🚪 Sair</button>
-            </div>
+      <div class="admin-header">
+        <div>
+          <h1>📋 Painel Administrativo</h1>
+          <p>Gerencie todos os agendamentos</p>
         </div>
+        <div style="display: flex; gap: 10px; align-items: center">
+          <a
+            href="financeiro.html"
+            class="logout-btn"
+            style="text-decoration: none; background: rgba(255, 255, 255, 0.25)"
+            >💰 Financeiro</a
+          >
+          <a href="config.html" class="logout-btn" style="text-decoration: none"
+            >⚙️ Configurações</a
+          >
+          <button class="logout-btn" onclick="fazerLogout()">🚪 Sair</button>
+        </div>
+      </div>
 
-        <div class="stats" id="stats">
-            <div class="stat-card">
-                <h3>Total</h3>
-                <div class="value" id="stat-total">0</div>
-            </div>
-            <div class="stat-card">
-                <h3>Pendentes</h3>
-                <div class="value" id="stat-pendentes">0</div>
-            </div>
-            <div class="stat-card">
-                <h3>Confirmados</h3>
-                <div class="value" id="stat-confirmados">0</div>
-            </div>
-            <div class="stat-card">
-                <h3>Concluídos</h3>
-                <div class="value" id="stat-concluidos">0</div>
-            </div>
+      <div class="stats" id="stats">
+        <div class="stat-card">
+          <h3>Total</h3>
+          <div class="value" id="stat-total">0</div>
         </div>
+        <div class="stat-card">
+          <h3>Pendentes</h3>
+          <div class="value" id="stat-pendentes">0</div>
+        </div>
+        <div class="stat-card">
+          <h3>Confirmados</h3>
+          <div class="value" id="stat-confirmados">0</div>
+        </div>
+        <div class="stat-card">
+          <h3>Concluídos</h3>
+          <div class="value" id="stat-concluidos">0</div>
+        </div>
+      </div>
 
-        <div class="filters">
-            <input type="date" id="filter-data-inicio" placeholder="Data Início">
-            <input type="date" id="filter-data-fim" placeholder="Data Fim">
-            <select id="filter-status">
-                <option value="">Todos os Status</option>
-                <option value="pendente">Pendente</option>
-                <option value="confirmado">Confirmado</option>
-                <option value="concluido">Concluído</option>
-                <option value="cancelado">Cancelado</option>
-            </select>
-            <input type="text" id="filter-nome" placeholder="Buscar por nome...">
-            <input type="text" id="filter-telefone" placeholder="Buscar por telefone...">
-            <button class="cta-button" onclick="aplicarFiltros()">Filtrar</button>
-            <button class="cta-button" onclick="limparFiltros()" style="background: #6c757d;">Limpar</button>
-            <button class="cta-button" onclick="carregarAgendamentos()" style="background: #17a2b8;">🔄 Atualizar</button>
-            <button class="cta-button" onclick="abrirModalCriar()" style="background: #28a745;">➕ Novo Agendamento</button>
-            <button class="cta-button" onclick="limparTodosAgendamentos()" style="background: #dc3545;" title="⚠️ Deleta TODOS os agendamentos">🗑️ Limpar Todos</button>
-        </div>
+      <div class="filters">
+        <input type="date" id="filter-data-inicio" placeholder="Data Início" />
+        <input type="date" id="filter-data-fim" placeholder="Data Fim" />
+        <select id="filter-status">
+          <option value="">Todos os Status</option>
+          <option value="pendente">Pendente</option>
+          <option value="confirmado">Confirmado</option>
+          <option value="concluido">Concluído</option>
+          <option value="cancelado">Cancelado</option>
+        </select>
+        <input type="text" id="filter-nome" placeholder="Buscar por nome..." />
+        <input
+          type="text"
+          id="filter-telefone"
+          placeholder="Buscar por telefone..."
+        />
+        <button class="cta-button" onclick="aplicarFiltros()">Filtrar</button>
+        <button
+          class="cta-button"
+          onclick="limparFiltros()"
+          style="background: #6c757d"
+        >
+          Limpar
+        </button>
+        <button
+          class="cta-button"
+          onclick="carregarAgendamentos()"
+          style="background: #17a2b8"
+        >
+          🔄 Atualizar
+        </button>
+        <button
+          class="cta-button"
+          onclick="abrirModalCriar()"
+          style="background: #28a745"
+        >
+          ➕ Novo Agendamento
+        </button>
+        <button
+          class="cta-button"
+          onclick="limparTodosAgendamentos()"
+          style="background: #dc3545"
+          title="⚠️ Deleta TODOS os agendamentos"
+        >
+          🗑️ Limpar Todos
+        </button>
+      </div>
 
-        <div class="agendamentos-table">
-            <div id="loading" class="loading">Carregando agendamentos...</div>
-            <table id="agendamentos-table" style="display: none;">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Cliente</th>
-                        <th>Telefone</th>
-                        <th>Serviços</th>
-                        <th>Data</th>
-                        <th>Horário</th>
-                        <th>Valor</th>
-                        <th>Status</th>
-                        <th>Forma Pagamento</th>
-                        <th>Pago</th>
-                        <th>Data Pagamento</th>
-                        <th>Ações</th>
-                    </tr>
-                </thead>
-                <tbody id="agendamentos-tbody">
-                </tbody>
-            </table>
-        </div>
+      <div class="agendamentos-table">
+        <div id="loading" class="loading">Carregando agendamentos...</div>
+        <table id="agendamentos-table" style="display: none">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Cliente</th>
+              <th>Telefone</th>
+              <th>Serviços</th>
+              <th>Data</th>
+              <th>Horário</th>
+              <th>Valor</th>
+              <th>Status</th>
+              <th>Forma Pagamento</th>
+              <th>Pago</th>
+              <th>Data Pagamento</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="agendamentos-tbody"></tbody>
+        </table>
+      </div>
     </div>
 
     <!-- Modal de Edição -->
     <div id="editModal" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>✏️ Editar Agendamento</h2>
-                <button class="modal-close" onclick="fecharModal()">×</button>
-            </div>
-            <form id="editForm">
-                <input type="hidden" id="edit-id">
-                
-                <div class="form-group">
-                    <label for="edit-nome">Nome Completo *</label>
-                    <input type="text" id="edit-nome" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="edit-telefone">Telefone/WhatsApp *</label>
-                    <input type="tel" id="edit-telefone" placeholder="(11) 99999-9999" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="edit-servicos">Serviços *</label>
-                    <select id="edit-servicos" multiple required style="min-height: 100px;">
-                        <!-- Será preenchido via JavaScript -->
-                    </select>
-                    <small style="color: #666; font-size: 12px; margin-top: 5px; display: block;">
-                        Segure Ctrl (Windows) ou Cmd (Mac) para selecionar múltiplos serviços
-                    </small>
-                </div>
-                
-                <div class="form-group">
-                    <label for="edit-data">Data *</label>
-                    <input type="date" id="edit-data" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="edit-horario">Horário *</label>
-                    <input type="time" id="edit-horario" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="edit-valor">Valor Total (R$) *</label>
-                    <input type="number" id="edit-valor" step="0.01" min="0" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="edit-status">Status *</label>
-                    <select id="edit-status" required>
-                        <option value="pendente">Pendente</option>
-                        <option value="confirmado">Confirmado</option>
-                        <option value="cancelado">Cancelado</option>
-                        <option value="concluido">Concluído</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label for="edit-forma-pagamento">Forma de Pagamento *</label>
-                    <select id="edit-forma-pagamento" required>
-                        <option value="pendente">Pendente</option>
-                        <option value="pix">PIX</option>
-                        <option value="cartao">Cartão (Débito ou Crédito)</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label for="edit-pago">Pagamento Recebido</label>
-                    <select id="edit-pago">
-                        <option value="false">Não</option>
-                        <option value="true">Sim</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label for="edit-data-pagamento">Data do Pagamento</label>
-                    <input type="date" id="edit-data-pagamento">
-                    <small style="color: #666; font-size: 12px; margin-top: 5px; display: block;">
-                        Deixe em branco se ainda não foi pago
-                    </small>
-                </div>
-                
-                <div class="form-actions">
-                    <button type="button" class="btn-cancel" onclick="fecharModal()">Cancelar</button>
-                    <button type="submit" class="btn-save">Salvar Alterações</button>
-                </div>
-            </form>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>✏️ Editar Agendamento</h2>
+          <button class="modal-close" onclick="fecharModal()">×</button>
         </div>
+        <form id="editForm">
+          <input type="hidden" id="edit-id" />
+
+          <div class="form-group">
+            <label for="edit-nome">Nome Completo *</label>
+            <input type="text" id="edit-nome" required />
+          </div>
+
+          <div class="form-group">
+            <label for="edit-telefone">Telefone/WhatsApp *</label>
+            <input
+              type="tel"
+              id="edit-telefone"
+              placeholder="(11) 99999-9999"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="edit-servicos">Serviços *</label>
+            <select
+              id="edit-servicos"
+              multiple
+              required
+              style="min-height: 100px"
+            >
+              <!-- Será preenchido via JavaScript -->
+            </select>
+            <small
+              style="
+                color: #666;
+                font-size: 12px;
+                margin-top: 5px;
+                display: block;
+              "
+            >
+              Segure Ctrl (Windows) ou Cmd (Mac) para selecionar múltiplos
+              serviços
+            </small>
+          </div>
+
+          <div class="form-group">
+            <label for="edit-data">Data *</label>
+            <input type="date" id="edit-data" required />
+          </div>
+
+          <div class="form-group">
+            <label for="edit-horario">Horário *</label>
+            <input type="time" id="edit-horario" required />
+          </div>
+
+          <div class="form-group">
+            <label for="edit-valor">Valor Total (R$) *</label>
+            <input type="number" id="edit-valor" step="0.01" min="0" required />
+          </div>
+
+          <div class="form-group">
+            <label for="edit-status">Status *</label>
+            <select id="edit-status" required>
+              <option value="pendente">Pendente</option>
+              <option value="confirmado">Confirmado</option>
+              <option value="cancelado">Cancelado</option>
+              <option value="concluido">Concluído</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="edit-forma-pagamento">Forma de Pagamento *</label>
+            <select id="edit-forma-pagamento" required>
+              <option value="pendente">Pendente</option>
+              <option value="pix">PIX</option>
+              <option value="cartao">Cartão (Débito ou Crédito)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="edit-pago">Pagamento Recebido</label>
+            <select id="edit-pago">
+              <option value="false">Não</option>
+              <option value="true">Sim</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="edit-data-pagamento">Data do Pagamento</label>
+            <input type="date" id="edit-data-pagamento" />
+            <small
+              style="
+                color: #666;
+                font-size: 12px;
+                margin-top: 5px;
+                display: block;
+              "
+            >
+              Deixe em branco se ainda não foi pago
+            </small>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn-cancel" onclick="fecharModal()">
+              Cancelar
+            </button>
+            <button type="submit" class="btn-save">Salvar Alterações</button>
+          </div>
+        </form>
+      </div>
     </div>
 
     <!-- Modal de Criar Agendamento -->
     <div id="createModal" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>➕ Novo Agendamento</h2>
-                <button class="modal-close" onclick="fecharModalCriar()">×</button>
-            </div>
-            <form id="createForm">
-                <div class="form-group" style="position: relative;">
-                    <label for="create-nome">Cliente *</label>
-                    <div style="position: relative;">
-                        <input type="text" id="create-nome" placeholder="Digite para buscar ou selecionar cliente..." required autocomplete="off" style="padding-right: 40px;">
-                        <span id="cliente-indicator" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #999; pointer-events: none;">🔍</span>
-                    </div>
-                    <div id="clientes-suggestions" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #ddd; border-radius: 4px; max-height: 250px; overflow-y: auto; z-index: 1000; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-top: 2px;">
-                        <!-- Sugestões serão inseridas aqui -->
-                    </div>
-                    <small style="color: #666; font-size: 12px; margin-top: 5px; display: block;">
-                        Digite para buscar clientes cadastrados ou cadastre um novo cliente
-                    </small>
-                </div>
-                
-                <div class="form-group">
-                    <label for="create-telefone">Telefone/WhatsApp *</label>
-                    <input type="tel" id="create-telefone" placeholder="(11) 99999-9999" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="create-servicos">Serviços *</label>
-                    <select id="create-servicos" multiple required style="min-height: 100px;">
-                        <!-- Será preenchido via JavaScript -->
-                    </select>
-                    <small style="color: #666; font-size: 12px; margin-top: 5px; display: block;">
-                        Segure Ctrl (Windows) ou Cmd (Mac) para selecionar múltiplos serviços
-                    </small>
-                </div>
-                
-                <div class="form-group">
-                    <label for="create-data">Data *</label>
-                    <input type="date" id="create-data" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="create-horario">Horário *</label>
-                    <select id="create-horario" required disabled>
-                        <option value="">Selecione primeiro os serviços e a data</option>
-                    </select>
-                    <small id="create-horario-loading" style="color: #666; font-size: 12px; margin-top: 5px; display: none;">
-                        Carregando horários disponíveis...
-                    </small>
-                    <small id="create-horario-empty" style="color: #dc3545; font-size: 12px; margin-top: 5px; display: none;">
-                        Nenhum horário disponível para esta data com os serviços selecionados.
-                    </small>
-                </div>
-                
-                <div class="form-group">
-                    <label for="create-status">Status *</label>
-                    <select id="create-status" required>
-                        <option value="pendente">Pendente</option>
-                        <option value="confirmado">Confirmado</option>
-                        <option value="cancelado">Cancelado</option>
-                        <option value="concluido">Concluído</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label for="create-forma-pagamento">Forma de Pagamento *</label>
-                    <select id="create-forma-pagamento" required>
-                        <option value="pendente">Pendente</option>
-                        <option value="pix">PIX</option>
-                        <option value="cartao">Cartão (Débito ou Crédito)</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label for="create-pago">Pagamento Recebido</label>
-                    <select id="create-pago">
-                        <option value="false">Não</option>
-                        <option value="true">Sim</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label for="create-data-pagamento">Data do Pagamento</label>
-                    <input type="date" id="create-data-pagamento">
-                    <small style="color: #666; font-size: 12px; margin-top: 5px; display: block;">
-                        Deixe em branco se ainda não foi pago
-                    </small>
-                </div>
-                
-                <div class="form-actions">
-                    <button type="button" class="btn-cancel" onclick="fecharModalCriar()">Cancelar</button>
-                    <button type="submit" class="btn-save">Criar Agendamento</button>
-                </div>
-            </form>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>➕ Novo Agendamento</h2>
+          <button class="modal-close" onclick="fecharModalCriar()">×</button>
         </div>
+        <form id="createForm">
+          <div class="form-group" style="position: relative">
+            <label for="create-nome">Cliente *</label>
+            <div style="position: relative">
+              <input
+                type="text"
+                id="create-nome"
+                placeholder="Digite para buscar ou selecionar cliente..."
+                required
+                autocomplete="off"
+                style="padding-right: 40px"
+              />
+              <span
+                id="cliente-indicator"
+                style="
+                  position: absolute;
+                  right: 12px;
+                  top: 50%;
+                  transform: translateY(-50%);
+                  color: #999;
+                  pointer-events: none;
+                "
+                >🔍</span
+              >
+            </div>
+            <div
+              id="clientes-suggestions"
+              style="
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: white;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                max-height: 250px;
+                overflow-y: auto;
+                z-index: 1000;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                margin-top: 2px;
+              "
+            >
+              <!-- Sugestões serão inseridas aqui -->
+            </div>
+            <small
+              style="
+                color: #666;
+                font-size: 12px;
+                margin-top: 5px;
+                display: block;
+              "
+            >
+              Digite para buscar clientes cadastrados ou cadastre um novo
+              cliente
+            </small>
+          </div>
+
+          <div class="form-group">
+            <label for="create-telefone">Telefone/WhatsApp *</label>
+            <input
+              type="tel"
+              id="create-telefone"
+              placeholder="(11) 99999-9999"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="create-servicos">Serviços *</label>
+            <select
+              id="create-servicos"
+              multiple
+              required
+              style="min-height: 100px"
+            >
+              <!-- Será preenchido via JavaScript -->
+            </select>
+            <small
+              style="
+                color: #666;
+                font-size: 12px;
+                margin-top: 5px;
+                display: block;
+              "
+            >
+              Segure Ctrl (Windows) ou Cmd (Mac) para selecionar múltiplos
+              serviços
+            </small>
+          </div>
+
+          <div class="form-group">
+            <label for="create-data">Data *</label>
+            <input type="date" id="create-data" required />
+          </div>
+
+          <div class="form-group">
+            <label for="create-horario">Horário *</label>
+            <select id="create-horario" required disabled>
+              <option value="">Selecione primeiro os serviços e a data</option>
+            </select>
+            <small
+              id="create-horario-loading"
+              style="
+                color: #666;
+                font-size: 12px;
+                margin-top: 5px;
+                display: none;
+              "
+            >
+              Carregando horários disponíveis...
+            </small>
+            <small
+              id="create-horario-empty"
+              style="
+                color: #dc3545;
+                font-size: 12px;
+                margin-top: 5px;
+                display: none;
+              "
+            >
+              Nenhum horário disponível para esta data com os serviços
+              selecionados.
+            </small>
+          </div>
+
+          <div class="form-group">
+            <label for="create-status">Status *</label>
+            <select id="create-status" required>
+              <option value="pendente">Pendente</option>
+              <option value="confirmado">Confirmado</option>
+              <option value="cancelado">Cancelado</option>
+              <option value="concluido">Concluído</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="create-forma-pagamento">Forma de Pagamento *</label>
+            <select id="create-forma-pagamento" required>
+              <option value="pendente">Pendente</option>
+              <option value="pix">PIX</option>
+              <option value="cartao">Cartão (Débito ou Crédito)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="create-pago">Pagamento Recebido</label>
+            <select id="create-pago">
+              <option value="false">Não</option>
+              <option value="true">Sim</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="create-data-pagamento">Data do Pagamento</label>
+            <input type="date" id="create-data-pagamento" />
+            <small
+              style="
+                color: #666;
+                font-size: 12px;
+                margin-top: 5px;
+                display: block;
+              "
+            >
+              Deixe em branco se ainda não foi pago
+            </small>
+          </div>
+
+          <div class="form-actions">
+            <button
+              type="button"
+              class="btn-cancel"
+              onclick="fecharModalCriar()"
+            >
+              Cancelar
+            </button>
+            <button type="submit" class="btn-save">Criar Agendamento</button>
+          </div>
+        </form>
+      </div>
     </div>
 
     <script src="admin.js"></script>
-</body>
+  </body>
 </html>
