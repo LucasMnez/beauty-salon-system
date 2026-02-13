@@ -1942,12 +1942,28 @@ body {
 }
 
 /* ===== Agendamento guiado (chat) ===== */
+/* ===== Agendamento guiado (chat) ===== */
+/* Sobrescreve o fundo branco do site APENAS nessa página */
 .chat-booking {
-  min-height: calc(100vh - 120px);
+  min-height: 100vh; /* antes estava calc(100vh - 120px) */
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 30px 16px;
+
+  /* fundo "app" (tela inteira) */
+  background:
+    radial-gradient(
+      1200px 600px at 30% 20%,
+      rgba(212, 165, 116, 0.18),
+      transparent 55%
+    ),
+    radial-gradient(
+      900px 500px at 70% 80%,
+      rgba(255, 255, 255, 0.06),
+      transparent 60%
+    ),
+    #0b1020;
 }
 
 .chat-shell {
@@ -2062,6 +2078,78 @@ body {
 .chat-input:disabled {
   opacity: 0.55;
   cursor: not-allowed;
+}
+
+.chat-typing {
+  opacity: 0.85;
+  font-style: italic;
+}
+
+.chat-actions {
+  padding: 0 14px 14px;
+}
+
+.chat-carousel {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 8px 2px 2px;
+  scroll-snap-type: x mandatory;
+}
+
+.chat-card {
+  flex: 0 0 260px;
+  scroll-snap-align: start;
+  border-radius: 14px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: #fff;
+  cursor: pointer;
+  user-select: none;
+  transition:
+    transform 0.15s ease,
+    border-color 0.15s ease;
+  position: relative;
+}
+
+.chat-card:hover {
+  transform: translateY(-1px);
+  border-color: rgba(212, 165, 116, 0.8);
+}
+
+.chat-card.selected {
+  border-color: rgba(212, 165, 116, 1);
+  box-shadow: 0 0 0 2px rgba(212, 165, 116, 0.25) inset;
+}
+
+.chat-card-title {
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+.chat-card-sub {
+  font-size: 12px;
+  opacity: 0.85;
+  display: flex;
+  justify-content: space-between;
+}
+
+.chat-check {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 18px;
+  height: 18px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.chat-card.selected .chat-check {
+  background: rgba(212, 165, 116, 0.95);
+  border-color: rgba(212, 165, 116, 1);
 }
 
 @media (max-width: 520px) {
