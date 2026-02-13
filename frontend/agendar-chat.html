@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Agendar (Chat) - Raissa Nails</title>
+
+    <!-- IMPORTANTE: absoluto pra não quebrar em rotas bonitas -->
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+
+  <body>
+    <main class="chat-booking">
+      <div class="chat-shell">
+        <div class="chat-header">
+          <div class="chat-title">Agendamento guiado</div>
+          <div class="chat-subtitle">Responda e avance</div>
+        </div>
+
+        <div id="chatMessages" class="chat-messages" aria-live="polite"></div>
+
+        <form id="chatForm" class="chat-inputbar" autocomplete="off">
+          <input
+            id="chatInput"
+            class="chat-input"
+            type="text"
+            placeholder="Digite aqui..."
+            required
+          />
+          <button id="chatSend" class="chat-send" type="submit">Enviar</button>
+        </form>
+      </div>
+    </main>
+
+    <script src="/agendar-chat.js"></script>
+  </body>
+</html>

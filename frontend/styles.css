@@ -1940,3 +1940,132 @@ body {
     padding: 20px;
   }
 }
+
+/* ===== Agendamento guiado (chat) ===== */
+.chat-booking {
+  min-height: calc(100vh - 120px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 16px;
+}
+
+.chat-shell {
+  width: 100%;
+  max-width: 980px;
+  background: #111827;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+}
+
+.chat-header {
+  padding: 18px 22px;
+  background: linear-gradient(
+    90deg,
+    rgba(212, 165, 116, 0.25),
+    rgba(17, 24, 39, 0)
+  );
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.chat-title {
+  color: #fff;
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.chat-subtitle {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.chat-messages {
+  height: min(64vh, 520px);
+  padding: 18px;
+  overflow: auto;
+  background: radial-gradient(
+    circle at top,
+    rgba(255, 255, 255, 0.06),
+    transparent 55%
+  );
+}
+
+.chat-bubble {
+  display: flex;
+  margin: 10px 0;
+}
+
+.chat-bubble.bot {
+  justify-content: flex-start;
+}
+
+.chat-bubble.user {
+  justify-content: flex-end;
+}
+
+.chat-text {
+  max-width: 80%;
+  padding: 12px 14px;
+  border-radius: 14px;
+  font-size: 14px;
+  line-height: 1.35;
+  white-space: pre-wrap;
+}
+
+.chat-bubble.bot .chat-text {
+  background: rgba(212, 165, 116, 0.55);
+  color: #111;
+}
+
+.chat-bubble.user .chat-text {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+.chat-inputbar {
+  display: grid;
+  grid-template-columns: 1fr 140px;
+  gap: 10px;
+  padding: 14px;
+  background: rgba(0, 0, 0, 0.15);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.chat-input {
+  height: 44px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  padding: 0 12px;
+  outline: none;
+}
+
+.chat-input::placeholder {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.chat-send {
+  height: 44px;
+  border-radius: 12px;
+  border: none;
+  background: var(--primary-color);
+  color: #111;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.chat-send:disabled,
+.chat-input:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+@media (max-width: 520px) {
+  .chat-inputbar {
+    grid-template-columns: 1fr;
+  }
+}
